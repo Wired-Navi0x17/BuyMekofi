@@ -17,14 +17,16 @@ export function Hero() {
             id="hero-title"
             className="font-display text-[clamp(2.5rem,4.9vw,4.25rem)] leading-[0.98] tracking-tight text-balance"
           >
-            One page for everything you make.
-            <span className="block text-ink-soft italic">And a plain way to be paid for it.</span>
+            A page you can shape into your own website.
+            <span className="block text-ink-soft italic">With a way to be paid built in.</span>
           </h1>
-          <p className="mt-7 max-w-[52ch] text-[1.0625rem] leading-relaxed text-ink-soft">
-            {brand.name} gives creators in India a page at{" "}
-            <span className="tabular text-[0.95em] text-ink">{profileUrlFor("yourname")}</span> with
-            your links, your portfolio and a support panel. The page costs nothing. We only charge
-            commission on contributions that are processed through us.
+          <p className="mt-7 max-w-[54ch] text-[1.0625rem] leading-relaxed text-ink-soft">
+            Start at{" "}
+            <span className="text-[0.95em] tabular text-ink">{profileUrlFor("yourname")}</span>,
+            then make it yours: layouts, typefaces, colours, backgrounds, image collages, tabbed
+            sections and hover details, until it reads like a personal site rather than a profile.
+            Your portfolio lives there, and so does a support panel. The page costs nothing; we
+            charge commission only on contributions processed through {brand.name}.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <ButtonLink href="/register">Create your page</ButtonLink>

@@ -15,7 +15,6 @@
   --color-brick: #b3261e;
 
   --font-sans: var(--font-geist), ui-sans-serif, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-display: var(--font-instrument-serif), Georgia, serif;
 
   /* Zero radius everywhere (DESIGN.md §4). */
@@ -36,6 +35,14 @@
     background: var(--color-paper);
     color: var(--color-ink);
     -webkit-text-size-adjust: 100%;
+  }
+  html {
+    scroll-padding-top: 1.5rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
   body {
     font-family: var(--font-sans);
@@ -88,8 +95,7 @@
 }
 
 /* Landing intro: the spacer gives the burn one viewport of scroll to play out. */
-.intro-spacer[data-intro="pending"],
-.intro-spacer[data-intro="done"] {
+.intro-spacer[data-intro="pending"] {
   min-height: 200dvh;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -118,9 +124,10 @@
   }
 }
 
+/* Numbers and ids: Geist with tabular figures (no third UI typeface). */
 @utility tabular {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: 0.01em;
 }
 
 @utility section-gap {

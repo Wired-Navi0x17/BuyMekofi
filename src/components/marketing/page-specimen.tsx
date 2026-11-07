@@ -10,8 +10,8 @@ export function PageSpecimen() {
     <figure className="w-full max-w-md justify-self-center md:justify-self-end">
       <div aria-hidden className="border border-ink bg-sheet">
         <div className="flex items-center justify-between border-b border-rule px-4 py-2">
-          <span className="tabular text-xs text-ink-faint">{profileUrlFor("yourname")}</span>
-          <span className="tabular text-xs text-ink-faint">example</span>
+          <span className="text-xs tabular text-ink-faint">{profileUrlFor("yourname")}</span>
+          <span className="text-xs tabular text-ink-faint">example</span>
         </div>
 
         <div className="px-5 pt-5 pb-4">
@@ -21,7 +21,7 @@ export function PageSpecimen() {
             </div>
             <div className="min-w-0">
               <p className="text-lg leading-tight font-medium">Your name</p>
-              <p className="tabular text-sm text-ink-soft">@yourname</p>
+              <p className="text-sm tabular text-ink-soft">@yourname</p>
               <p className="mt-2 text-sm leading-snug text-ink-soft">
                 One or two lines about what you make and who it is for.
               </p>
@@ -59,7 +59,7 @@ export function PageSpecimen() {
             {[50, 100, 250].map((r) => (
               <div
                 key={r}
-                className={`border py-2 text-center tabular text-sm ${r === 100 ? "border-ink bg-ink text-sheet" : "border-rule"}`}
+                className={`border py-2 text-center text-sm tabular ${r === 100 ? "border-ink bg-ink text-sheet" : "border-rule"}`}
               >
                 ₹{r}
               </div>
@@ -78,7 +78,8 @@ export function PageSpecimen() {
         </div>
       </div>
       <figcaption className="mt-3 text-sm text-ink-soft">
-        The layout every page follows. Your links, your work, then the support panel.
+        The plainest starting layout. Every part of it, from typefaces to backgrounds, can be
+        restyled; only the support panel keeps a fixed, recognisable form.
       </figcaption>
     </figure>
   );

@@ -33,6 +33,8 @@ The creator chooses a username, sets their display name and bio, uploads an avat
 
 ### 2.4 Public creator page
 
+A creator page can be designed into a full personal website: theme, up to three typefaces, backgrounds, collages, tabs, hover reveals, and later sandboxed custom CSS. See PAGE_STUDIO.md. The support panel always keeps its platform form.
+
 Avatar and cover, name, `@username`, bio, social links, portfolio projects with descriptions, featured work, a support section and public support activity.
 
 ### 2.5 Creator dashboard
@@ -40,6 +42,8 @@ Avatar and cover, name, `@username`, bio, social links, portfolio projects with 
 Overview, profile editor, portfolio editor, supporter activity, contribution history, earnings summary, current commission status (the rate that applies now and why), voucher status (claimed or not, and when it expires) and settings.
 
 ### 2.6 Administration
+
+Includes a **site CMS**: the founder edits landing-page copy, FAQ, pricing notes, navigation, footer and announcements without a deploy. Changes go through draft → publish, with history.
 
 Admin access is based on roles stored in the database. It covers creator management, voucher campaign management, payment and webhook inspection, commission reporting, refunds and disputes, audit logs and platform settings.
 

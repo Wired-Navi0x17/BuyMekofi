@@ -8,7 +8,7 @@ VARIANCE: 6 | MOTION: 6 on the landing intro, 3 inside the app | DENSITY: 4 on m
 
 ## 1. Atmosphere
 
-Paper and ink. The site reads like a well-made notebook: warm off-white paper, charcoal ink, hairline rules and no rounded corners. It looks calm and exact, the way a receipt you trust does. Motion is reserved for one moment (the intro) and for confirming things. Money is always set in monospace and right-aligned, the way a ledger is.
+Paper and ink. The site reads like a well-made notebook: warm off-white paper, charcoal ink, hairline rules and no rounded corners. It looks calm and exact, the way a receipt you trust does. Motion is reserved for one moment (the intro) and for confirming things. Money is always set with tabular figures and right-aligned, the way a ledger is.
 
 ## 1b. Signature element (exactly one)
 
@@ -40,8 +40,9 @@ There is no dark theme at launch. A dark "night ink" theme is a later decision, 
 
 - **Display (marketing only):** `Instrument Serif`, regular and italic. Sizes from `clamp(2.5rem, 6vw, 5rem)`, `tracking-tight`, `leading-[0.95]`. Hierarchy comes from size steps and italics, never from a giant screaming H1. **No serif in the dashboard or admin.**
 - **UI and body:** `Geist`. Body is 1rem (16px), with `leading-relaxed` and a maximum line length of 65ch.
-- **Numbers:** `Geist Mono` with `tabular-nums` for every amount, rate, date in a table, and every id. Rupee amounts are written `₹1,250.00`, using Indian digit grouping (`en-IN`).
+- **Numbers:** `Geist` with `tabular-nums` and a slashed zero for every amount, rate, table date and id. Rupee amounts are written `₹1,250.00`, using Indian digit grouping (`en-IN`).
 - **Wordmark:** outlines of Mr Dafoe (SIL OFL) converted to SVG paths. The font file is not shipped.
+- **Limit: three typefaces on the platform UI:** Geist, Instrument Serif, and the Mr Dafoe wordmark, which ships as SVG artwork rather than a loaded font. Creator pages have their own cap of 3 typefaces (PAGE_STUDIO.md).
 - **Banned:** Inter, a system-ui fallback used as the brand face, and serif in app UI.
 
 ## 4. Components

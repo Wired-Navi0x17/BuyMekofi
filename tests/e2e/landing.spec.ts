@@ -19,6 +19,20 @@ test.describe("landing intro", () => {
     await expect(page.locator(".burn-overlay")).toHaveCount(0, { timeout: 5_000 });
   });
 
+  test("after the burn the page scrolls normally, including back to the top", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".burn-overlay")).toHaveAttribute("data-ready", "true");
+    await page.mouse.wheel(0, 2_500);
+    await expect(page.locator(".burn-overlay")).toHaveCount(0);
+    // "done", or "off" once the seen-flag is read: either way the runway is gone.
+    await expect(page.locator(".intro-spacer")).not.toHaveAttribute("data-intro", "pending");
+    // The scroll runway is gone, so scrolling up reaches the header directly.
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+    await expect(page.getByRole("link", { name: "Coffea et Thea home" })).toBeInViewport();
+    await page.mouse.wheel(0, 600);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
+  });
+
   test("returning visitors skip the intro", async ({ page }) => {
     await page.goto("/");
     await page.evaluate(() => localStorage.setItem("coffea.intro.seen", "1"));
@@ -34,6 +48,29 @@ test.describe("reduced motion", () => {
     await page.goto("/");
     await expect(page.locator(".burn-overlay")).toBeHidden();
     await expect(page.getByRole("heading", { level: 1 })).toBeInViewport();
+  });
+});
+
+test.describe("navigation", () => {
+  test("header links glide to their section instead of jumping", async ({ page, isMobile }) => {
+    test.skip(isMobile, "section links are in the desktop header");
+    await page.goto("/");
+    await page.evaluate(() => localStorage.setItem("coffea.intro.seen", "1"));
+    await page.reload();
+    await page
+      .getByRole("navigation", { name: "Main" })
+      .getByRole("link", { name: "Pricing" })
+      .click();
+    // Sample the motion: a smooth scroll passes through intermediate positions.
+    const samples: number[] = [];
+    for (let i = 0; i < 20; i++) {
+      samples.push(await page.evaluate(() => window.scrollY));
+      await page.waitForTimeout(60);
+    }
+    const final = samples.at(-1) ?? 0;
+    expect(final).toBeGreaterThan(500);
+    expect(samples.some((y) => y > 50 && y < final - 200)).toBe(true);
+    await expect(page.locator("#pricing")).toBeInViewport();
   });
 });
 

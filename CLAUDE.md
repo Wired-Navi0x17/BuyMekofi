@@ -9,14 +9,15 @@ Coffea et Thea is a creator page and support platform for India, built as a Next
 - `DATABASE.md` for the schema and RLS
 - `PAYMENT_MODEL.md` for money rules
 - `SECURITY.md` for controls
-- `DESIGN.md` for visual rules
+- `DESIGN.md` for visual rules (platform UI: 3 typefaces max)
+- `PAGE_STUDIO.md` for creator page customisation and its safety line
 - `ROADMAP.md` and `progress.md` for where we are
 
 ## Commands
 
 - `pnpm dev`. Use port 3100 for e2e.
 - `pnpm lint && pnpm typecheck && pnpm test && pnpm build`. All four must be green before a commit.
-- `pnpm e2e`. On NixOS, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE=$(which google-chrome)`, because Playwright's bundled browsers don't run there.
+- `pnpm e2e`. If a `pnpm dev` is already running on port 3000, Next refuses a second dev server, so run with `E2E_PORT=3000`. On NixOS, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE=$(which google-chrome)`, because Playwright's bundled browsers don't run there.
 - `pnpm test:integration`: RLS tests against the linked dev Supabase project (needs `.env.local`).
 - `npx supabase db push --remote`: apply migrations to the dev project (dry-run first with `--dry-run`).
 - `pnpm format`.

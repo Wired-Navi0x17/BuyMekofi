@@ -57,7 +57,9 @@ export function BurnIntro({ children }: { children: ReactNode }) {
     const canvas = canvasRef.current;
     if (skip || !spacer || !overlay || !canvas) return;
 
-    const renderer = createBurnRenderer(canvas);
+    // 1.25x is visually identical for a noise field and roughly halves GPU
+    // work on retina screens, which is what keeps the scrub smooth.
+    const renderer = createBurnRenderer(canvas, 1.25);
     if (!renderer) {
       // No WebGL: drop the intro on the next frame.
       const id = requestAnimationFrame(() => setState("off"));
@@ -75,6 +77,12 @@ export function BurnIntro({ children }: { children: ReactNode }) {
 
     const frame = (now: number) => {
       renderer.draw(T_START + (T_END - T_START) * params.progress, now);
+      // Finish when the burn has actually completed, not when the trigger is
+      // passed: scrub smoothing lags behind the scrollbar.
+      if (params.progress >= 0.999) {
+        finish();
+        return;
+      }
       if (firstFrame) {
         // The CSS sheet covered the page until WebGL could draw the same paper.
         overlay.style.background = "transparent";
@@ -89,15 +97,24 @@ export function BurnIntro({ children }: { children: ReactNode }) {
     raf = requestAnimationFrame(frame);
     overlay.dataset.ready = "true"; // interactive from here on (used by e2e tests)
 
-    const finish = () => {
-      if (finished) return;
+    function finish() {
+      if (finished || !spacer) return;
       finished = true;
       cancelAnimationFrame(raf);
+      ctx.revert();
       inertTargets.forEach((el) => (el.inert = false));
       writeSeen();
+      // Collapse the scroll runway and move the scroll position by the same
+      // amount in the same frame, so nothing visibly jumps and the page then
+      // scrolls normally in both directions.
+      const hero = spacer.firstElementChild as HTMLElement | null;
+      const extra = spacer.offsetHeight - (hero?.offsetHeight ?? window.innerHeight);
+      spacer.style.minHeight = "0px";
+      window.scrollTo({ top: Math.max(0, window.scrollY - extra), behavior: "instant" });
       setState("done");
-    };
+    }
 
+    // Declared after finish(), which only runs from later frames/callbacks.
     const ctx = gsap.context(() => {
       gsap
         .timeline({
@@ -105,8 +122,9 @@ export function BurnIntro({ children }: { children: ReactNode }) {
             trigger: spacer,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.4,
-            onLeave: finish,
+            // Seconds the burn takes to catch up with the scrollbar: absorbs
+            // stepped mouse-wheel input into one continuous motion.
+            scrub: 1.1,
           },
         })
         .to(params, { progress: 1, ease: "none", duration: 1 }, 0)
@@ -116,7 +134,7 @@ export function BurnIntro({ children }: { children: ReactNode }) {
     skipRef.current = () => {
       ctx.revert();
       gsap.to(labelsRef.current, { opacity: 0, duration: 0.2 });
-      gsap.to(params, { progress: 1, duration: 1.2, ease: "power1.in", onComplete: finish });
+      gsap.to(params, { progress: 1, duration: 1.4, ease: "power1.inOut" });
     };
 
     return () => {

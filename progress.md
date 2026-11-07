@@ -63,6 +63,24 @@ Not done yet:
 - Audit rows for auth events. Supabase keeps its own auth audit log, and app-level audit starts with vouchers in Milestone 4.
 - Confirmation-email links are PKCE links, so they must be opened in the same browser that registered.
 
+## Founder feedback round (2026-11-07) ✅
+
+- **Warnings:**
+  - The hydration warnings came from the Dark Reader extension rewriting the DOM. Fixed with `<meta name="darkreader-lock">` (the site is light-only) and `suppressHydrationWarning` on `<html>` for other extensions.
+  - The `NODE_TLS_REJECT_UNAUTHORIZED` warning comes from the founder's shell environment, not the app.
+  - The "server caches disabled" line is a dev-only notice that appears when the browser bypasses cache (DevTools "Disable cache" or a hard reload).
+- **Smoother intro:**
+  - scrub smoothing raised to 1.1 s;
+  - WebGL resolution capped at 1.25× (the main source of jank on retina screens);
+  - the sheet now finishes when the burn completes, not when the trigger fires.
+- **Scrolling back:** once the burn completes, the 100vh scroll runway collapses and the scroll position is compensated in the same frame, so the page scrolls normally in both directions.
+- **Three typefaces:** Geist Mono removed. Numbers use Geist with tabular figures. The platform uses Geist, Instrument Serif and the wordmark artwork.
+- **Smooth navigation:** CSS `scroll-behavior: smooth` (reduced-motion aware), plus `data-scroll-behavior="smooth"` so route changes stay instant.
+- **Hero copy:** now leads with "a page you can shape into your own website".
+- **New docs:** PAGE_STUDIO.md, the customisation design (blocks + theme + sandboxed CSS, no raw HTML or JS). The roadmap is reordered so Page Studio v1 (Milestone 4) and Admin + Site CMS (Milestone 5) come before payments.
+
+Verification: lint, typecheck and unit tests pass, and 29 e2e tests pass (new: scroll back after the burn, and nav links that glide).
+
 ## Next: Milestone 3 (onboarding and public profile)
 
-Username claim with live availability, display name, bio, avatar upload (Storage bucket and policies), social links, portfolio projects, publish, and the public `/[username]` page.
+Username claim with live availability, profile basics, avatar upload (Storage bucket and policies), the `page_documents` model with a shared renderer, and the public `/[username]` page. Then Page Studio v1 (Milestone 4) and Admin + Site CMS (Milestone 5).

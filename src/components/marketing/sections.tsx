@@ -11,8 +11,8 @@ const steps = [
     body: `Your page lives at ${profileUrlFor("yourname")}. Short, lowercase, and yours as long as the account is active.`,
   },
   {
-    title: "Put your work on it",
-    body: "Add a photo, a short bio, your social links and the projects you want people to see first. The page is useful before anyone pays you anything.",
+    title: "Design it like your own site",
+    body: "Choose a layout, then change everything about it: typefaces, colours, backgrounds, image shapes, sections and the way things move on hover. Add your work and the projects you want seen first. The page is useful before anyone pays you anything.",
   },
   {
     title: "Share one link",
@@ -41,7 +41,7 @@ export function HowItWorks() {
         <ol className="divide-y divide-rule border-y border-rule">
           {steps.map((step, i) => (
             <li key={step.title} className="grid grid-cols-[3rem_1fr] gap-4 py-6">
-              <span className="pt-0.5 tabular text-sm text-cherry">
+              <span className="pt-0.5 text-sm tabular text-cherry">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>
@@ -174,7 +174,7 @@ export function Pricing() {
                     <span className="block font-medium">{what}</span>
                     <span className="mt-0.5 block text-sm text-ink-soft">{note}</span>
                   </th>
-                  <td className="py-4 text-right align-top tabular text-lg">{rate}</td>
+                  <td className="py-4 text-right align-top text-lg tabular">{rate}</td>
                 </tr>
               ))}
             </tbody>
@@ -254,7 +254,7 @@ export function Faq() {
                 {f.q}
                 <span
                   aria-hidden
-                  className="tabular text-xl text-ink-soft transition-transform duration-200 group-open:rotate-45"
+                  className="text-xl tabular text-ink-soft transition-transform duration-200 group-open:rotate-45"
                 >
                   +
                 </span>
