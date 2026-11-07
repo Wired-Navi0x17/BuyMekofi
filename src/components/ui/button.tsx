@@ -1,15 +1,21 @@
 import Link from "next/link";
 import type { ComponentProps } from "react";
 
-type Variant = "primary" | "secondary" | "quiet";
+type Variant = "primary" | "stamp" | "secondary" | "quiet";
 type Size = "md" | "sm";
 
 const base =
-  "inline-flex items-center justify-center gap-2 font-medium transition-[transform,background-color,border-color,color] duration-200 ease-[var(--ease-ink)] active:translate-y-px disabled:pointer-events-none disabled:opacity-50 select-none";
+  "inline-flex items-center justify-center gap-2 font-medium transition-[transform,background-color,border-color,color,box-shadow] duration-150 ease-[var(--ease-ink)] disabled:pointer-events-none disabled:opacity-50 select-none";
+
+// Pressed like a rubber stamp: the hard shadow collapses as the button moves into it.
+const pressable =
+  "press-shadow hover:-translate-x-px hover:-translate-y-px active:translate-x-[3px] active:translate-y-[3px] active:shadow-[1px_1px_0_var(--color-ink)]";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-ink text-sheet hover:bg-ink/90",
-  secondary: "border border-ink text-ink hover:bg-ink hover:text-sheet",
+  primary: `bg-ink text-sheet border-2 border-ink ${pressable}`,
+  stamp: `bg-shu text-sheet border-2 border-ink ${pressable}`,
+  secondary:
+    "border-2 border-ink bg-sheet text-ink hover:bg-ink hover:text-sheet active:translate-y-px",
   quiet: "text-ink-soft hover:text-ink underline-offset-4 decoration-1 hover:underline",
 };
 

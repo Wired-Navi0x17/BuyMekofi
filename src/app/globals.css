@@ -2,20 +2,21 @@
 
 /* Design tokens: DESIGN.md §2–§4 is the source of truth. */
 @theme {
-  --color-paper: #f4f0e6;
-  --color-sheet: #fbf8f1;
-  --color-ink: #23201d;
-  --color-ink-soft: #5c5750;
-  --color-ink-faint: #8a847a;
-  --color-rule: #d8d1c3;
-  --color-rule-strong: #b9b0a0;
-  --color-cherry: #8e2c3a;
-  --color-leaf: #3f6b3a;
+  /* Manga café: newsprint paper, brush ink, one hanko-vermilion spot colour. */
+  --color-paper: #f5efe3;
+  --color-sheet: #fffcf5;
+  --color-ink: #1b1a18;
+  --color-ink-soft: #55504a;
+  --color-ink-faint: #8a8378;
+  --color-rule: #d9d0bf;
+  --color-rule-strong: #b3a993;
+  --color-shu: #c23b22;
+  --color-leaf: #3d6a35;
   --color-turmeric: #8a5d00;
-  --color-brick: #b3261e;
+  --color-brick: #9e1c1c;
 
   --font-sans: var(--font-geist), ui-sans-serif, sans-serif;
-  --font-display: var(--font-instrument-serif), Georgia, serif;
+  --font-display: var(--font-dela-gothic), var(--font-geist), sans-serif;
 
   /* Zero radius everywhere (DESIGN.md §4). */
   --radius-xs: 0;
@@ -50,11 +51,11 @@
     line-height: 1.6;
   }
   ::selection {
-    background: var(--color-cherry);
+    background: var(--color-shu);
     color: var(--color-sheet);
   }
   :focus-visible {
-    outline: 2px solid var(--color-cherry);
+    outline: 2px solid var(--color-shu);
     outline-offset: 2px;
   }
   /* Belt and braces: nothing in this product is rounded. */
@@ -138,4 +139,40 @@
 @utility hatch {
   background-color: var(--color-paper);
   background-image: repeating-linear-gradient(135deg, transparent 0 7px, var(--color-rule) 7px 8px);
+}
+
+/* ---- Manga café materials (DESIGN.md §2b) ---------------------------- */
+
+/* Screentone: halftone dots in ink. Values are dot radius / cell size. */
+@utility tone-light {
+  background-image: radial-gradient(var(--color-ink) 0.9px, transparent 1.1px);
+  background-size: 7px 7px;
+}
+@utility tone-mid {
+  background-image: radial-gradient(var(--color-ink) 1.4px, transparent 1.6px);
+  background-size: 6px 6px;
+}
+@utility tone-dense {
+  background-image: radial-gradient(var(--color-ink) 2px, transparent 2.3px);
+  background-size: 5px 5px;
+}
+
+/* Focus/speed lines radiating from the centre, used once per view at most. */
+@utility speedlines {
+  background-image: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    color-mix(in srgb, var(--color-ink) 9%, transparent) 0deg 1.2deg,
+    transparent 1.2deg 7deg
+  );
+}
+
+/* An inked manga panel: heavy border, flat sheet. */
+@utility panel {
+  border: 2px solid var(--color-ink);
+  background-color: var(--color-sheet);
+}
+
+/* Hard offset shadow for the few things you press (CTAs, claim box). */
+@utility press-shadow {
+  box-shadow: 4px 4px 0 var(--color-ink);
 }

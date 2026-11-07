@@ -11,6 +11,7 @@ import {
   safeNextPath,
   type FieldErrors,
 } from "./schemas";
+import { normaliseUsername, validateUsernameFormat } from "@/modules/profiles/username";
 
 export type FormState = {
   status: "idle" | "error" | "sent";
@@ -58,11 +59,17 @@ export async function signUp(_prev: FormState, form: FormData): Promise<FormStat
     return { status: "error", errors: fieldErrors(parsed.error), email: str(form, "email") };
   }
 
+  // A name chosen in the landing claim box is carried as a prefill only;
+  // onboarding re-validates it and the unique constraint decides.
+  const wanted = validateUsernameFormat(normaliseUsername(str(form, "username")));
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: { emailRedirectTo: callbackUrl("/onboarding") },
+    options: {
+      emailRedirectTo: callbackUrl("/onboarding"),
+      data: wanted.ok ? { pending_username: wanted.username } : undefined,
+    },
   });
 
   // An already-registered email returns success without a session (Supabase

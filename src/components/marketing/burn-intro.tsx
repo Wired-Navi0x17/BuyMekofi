@@ -8,37 +8,29 @@ import { createBurnRenderer } from "./burn-shader";
 
 type IntroState = "pending" | "done" | "off";
 
-const SEEN_KEY = "coffea.intro.seen";
 /** Shader threshold at scroll start and end. Below ~0.12 nothing burns; above ~1.05 everything has. */
 const T_START = 0.12;
 const T_END = 1.06;
 
-function readSeen(): boolean {
-  try {
-    return window.localStorage.getItem(SEEN_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
 const noopSubscribe = () => () => {};
-/** True when the intro should not play: reduced motion or already seen. */
+/**
+ * The intro plays on every visit to the landing page (founder's choice,
+ * 2026-11-07) except: reduced motion, arriving at a section anchor
+ * (e.g. /#pricing from another page), or `?nointro` (used by tests).
+ */
 function shouldSkipIntro(): boolean {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches || readSeen();
-}
-
-function writeSeen() {
-  try {
-    window.localStorage.setItem(SEEN_KEY, "1");
-  } catch {
-    /* storage unavailable: the intro simply plays again next time */
-  }
+  return (
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    window.location.hash.length > 1 ||
+    new URLSearchParams(window.location.search).has("nointro")
+  );
 }
 
 /**
  * Landing intro (DESIGN.md §1b): a paper sheet with the wordmark written in
  * ink; scrolling burns it away to reveal `children`, which stay pinned
- * (CSS sticky) while the sheet burns. Skipped for reduced motion, for
- * returning visitors, without JS, and without WebGL.
+ * (CSS sticky) while the sheet burns. Skipped for reduced motion, anchor
+ * arrivals, without JS, and without WebGL.
  */
 export function BurnIntro({ children }: { children: ReactNode }) {
   const [progressState, setState] = useState<IntroState>("pending");
@@ -103,7 +95,6 @@ export function BurnIntro({ children }: { children: ReactNode }) {
       cancelAnimationFrame(raf);
       ctx.revert();
       inertTargets.forEach((el) => (el.inert = false));
-      writeSeen();
       // Collapse the scroll runway and move the scroll position by the same
       // amount in the same frame, so nothing visibly jumps and the page then
       // scrolls normally in both directions.

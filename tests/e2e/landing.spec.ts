@@ -24,7 +24,7 @@ test.describe("landing intro", () => {
     await expect(page.locator(".burn-overlay")).toHaveAttribute("data-ready", "true");
     await page.mouse.wheel(0, 2_500);
     await expect(page.locator(".burn-overlay")).toHaveCount(0);
-    // "done", or "off" once the seen-flag is read: either way the runway is gone.
+    // The scroll runway collapses once the burn completes.
     await expect(page.locator(".intro-spacer")).not.toHaveAttribute("data-intro", "pending");
     // The scroll runway is gone, so scrolling up reaches the header directly.
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
@@ -33,10 +33,12 @@ test.describe("landing intro", () => {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
   });
 
-  test("returning visitors skip the intro", async ({ page }) => {
+  test("plays on every visit, but not when arriving at a section link", async ({ page }) => {
     await page.goto("/");
-    await page.evaluate(() => localStorage.setItem("coffea.intro.seen", "1"));
+    await expect(page.locator(".burn-overlay")).toBeVisible();
     await page.reload();
+    await expect(page.locator(".burn-overlay")).toBeVisible();
+    await page.goto("/?nointro#faq");
     await expect(page.locator(".burn-overlay")).toHaveCount(0);
     await expect(page.locator(".intro-spacer")).toHaveAttribute("data-intro", "off");
   });
@@ -54,9 +56,7 @@ test.describe("reduced motion", () => {
 test.describe("navigation", () => {
   test("header links glide to their section instead of jumping", async ({ page, isMobile }) => {
     test.skip(isMobile, "section links are in the desktop header");
-    await page.goto("/");
-    await page.evaluate(() => localStorage.setItem("coffea.intro.seen", "1"));
-    await page.reload();
+    await page.goto("/?nointro");
     await page
       .getByRole("navigation", { name: "Main" })
       .getByRole("link", { name: "Pricing" })
@@ -71,6 +71,30 @@ test.describe("navigation", () => {
     expect(final).toBeGreaterThan(500);
     expect(samples.some((y) => y > 50 && y < final - 200)).toBe(true);
     await expect(page.locator("#pricing")).toBeInViewport();
+  });
+});
+
+test.describe("claim box", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("explains invalid and reserved names in place", async ({ page }) => {
+    await page.goto("/");
+    const box = page.getByLabel("Choose your page address");
+    await box.fill("ab");
+    await page.getByRole("button", { name: "Claim" }).click();
+    await expect(page.getByText("Use at least 3 characters.")).toBeVisible();
+    await box.fill("admin");
+    await page.getByRole("button", { name: "Claim" }).click();
+    await expect(page.getByText("That name is reserved. Try another.")).toBeVisible();
+  });
+
+  test("a free name carries through to registration", async ({ page }) => {
+    const name = `e2e_${Date.now().toString(36)}`;
+    await page.goto("/");
+    await page.getByLabel("Choose your page address").fill(`@${name.toUpperCase()}`);
+    await page.getByRole("button", { name: "Claim" }).click();
+    await expect(page).toHaveURL(new RegExp(`/register\\?username=${name}$`));
+    await expect(page.getByText(`coffeaetthea.in/${name}`)).toBeVisible();
   });
 });
 

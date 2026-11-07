@@ -45,8 +45,8 @@ void main() {
   uv.y *= min(1., u_resolution.y / u_resolution.x);
 
   float t = u_progress;
-  // sheet token #FBF8F1
-  vec3 color = vec3(.984, .973, .945);
+  // sheet token #FFFCF5
+  vec3 color = vec3(1., .988, .961);
 
   float main_noise = 1. - fbm(.75 * uv + 10. - vec2(.3, .9 * t));
 

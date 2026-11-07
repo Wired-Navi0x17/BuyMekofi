@@ -2,84 +2,95 @@ import { GlobeSimple, InstagramLogo, YoutubeLogo } from "@phosphor-icons/react/s
 import { profileUrlFor } from "@/config/brand";
 
 /**
- * A drawing of a creator page's layout, not a real creator. It is labelled
- * as an example and contains no invented people, numbers or supporters.
+ * A drawing of the default creator page ("Café" template, PAGE_STUDIO.md §6).
+ * Labelled as an example; contains no invented people, numbers or supporters.
  */
 export function PageSpecimen() {
   return (
-    <figure className="w-full max-w-md justify-self-center md:justify-self-end">
-      <div aria-hidden className="border border-ink bg-sheet">
-        <div className="flex items-center justify-between border-b border-rule px-4 py-2">
-          <span className="text-xs tabular text-ink-faint">{profileUrlFor("yourname")}</span>
-          <span className="text-xs tabular text-ink-faint">example</span>
+    <figure className="relative w-full max-w-lg justify-self-center md:justify-self-end">
+      <div aria-hidden className="panel press-shadow">
+        <div className="flex items-center justify-between border-b-2 border-ink px-3 py-1.5">
+          <span className="text-xs tabular text-ink-soft">{profileUrlFor("yourname")}</span>
+          <span className="text-xs text-ink-soft">example</span>
         </div>
 
-        <div className="px-5 pt-5 pb-4">
-          <div className="flex items-start gap-4">
-            <div className="grid size-16 shrink-0 place-items-center bg-ink font-display text-3xl text-sheet italic">
+        {/* Cover art */}
+        <div className="relative aspect-[3/1] overflow-hidden border-b-2 border-ink bg-paper">
+          <div className="absolute inset-0 tone-mid opacity-25" />
+          <div className="absolute inset-0 speedlines opacity-70" />
+          <span className="absolute right-2 bottom-1.5 bg-sheet px-1.5 text-[0.65rem] text-ink-soft">
+            your cover art
+          </span>
+        </div>
+
+        <div className="px-4 pb-3">
+          <div className="flex items-end justify-between gap-3">
+            <div className="relative -mt-8 grid size-16 shrink-0 place-items-center border-2 border-ink bg-shu font-display text-2xl text-sheet">
               Y
             </div>
-            <div className="min-w-0">
-              <p className="text-lg leading-tight font-medium">Your name</p>
-              <p className="text-sm tabular text-ink-soft">@yourname</p>
-              <p className="mt-2 text-sm leading-snug text-ink-soft">
-                One or two lines about what you make and who it is for.
-              </p>
-            </div>
-          </div>
-          <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink-soft">
-            <li className="flex items-center gap-1.5">
-              <InstagramLogo size={16} /> Instagram
-            </li>
-            <li className="flex items-center gap-1.5">
-              <YoutubeLogo size={16} /> YouTube
-            </li>
-            <li className="flex items-center gap-1.5">
-              <GlobeSimple size={16} /> Website
-            </li>
-          </ul>
-        </div>
-
-        <div className="grid grid-cols-[1.4fr_1fr] gap-px border-y border-rule bg-[var(--color-rule)]">
-          <div className="bg-sheet p-3">
-            <div className="aspect-[4/3] hatch" />
-            <p className="mt-2 text-xs font-medium">Featured project</p>
-          </div>
-          <div className="grid gap-px bg-sheet">
-            <div className="p-3">
-              <div className="aspect-[4/3] hatch" />
-              <p className="mt-2 text-xs font-medium">Project</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="px-5 py-4">
-          <p className="text-sm font-medium">Support my work</p>
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            {[50, 100, 250].map((r) => (
-              <div
-                key={r}
-                className={`border py-2 text-center text-sm tabular ${r === 100 ? "border-ink bg-ink text-sheet" : "border-rule"}`}
-              >
-                ₹{r}
+            <div className="flex gap-2 pt-3">
+              <div className="border-2 border-ink bg-sheet px-3 py-1 text-xs font-medium">
+                Share
               </div>
-            ))}
+              <div className="border-2 border-ink bg-shu px-3 py-1 text-xs font-medium text-sheet press-shadow">
+                Support
+              </div>
+            </div>
           </div>
-          <dl className="mt-4 grid gap-1.5 text-xs">
-            <div className="flex justify-between gap-4">
-              <dt className="text-ink-soft">Through the page</dt>
-              <dd>UPI, cards, net banking</dd>
+          <p className="mt-2 leading-tight font-medium">Your name</p>
+          <p className="text-xs tabular text-ink-soft">@yourname</p>
+        </div>
+
+        <div className="flex gap-5 border-y-2 border-ink px-4 text-xs font-medium">
+          <span className="border-b-[3px] border-shu py-2">About</span>
+          <span className="py-2 text-ink-soft">Gallery</span>
+          <span className="py-2 text-ink-soft">Posts</span>
+        </div>
+
+        <div className="grid gap-3 bg-paper p-3 sm:grid-cols-[1fr_1.15fr]">
+          <div className="grid content-start gap-3">
+            <div className="border-2 border-ink bg-sheet p-3">
+              <p className="text-xs font-medium">About</p>
+              <p className="mt-1 text-[0.7rem] leading-snug text-ink-soft">
+                A few lines about what you make and who it is for.
+              </p>
+              <div className="mt-2 flex gap-2 text-ink-soft">
+                <InstagramLogo size={14} />
+                <YoutubeLogo size={14} />
+                <GlobeSimple size={14} />
+              </div>
             </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-ink-soft">Direct to UPI ID</dt>
-              <dd>no fee, not anonymous</dd>
+            <div className="border-2 border-ink bg-sheet p-3">
+              <p className="text-xs font-medium">Gallery</p>
+              <div className="mt-2 grid grid-cols-3 gap-1">
+                <div className="aspect-square hatch" />
+                <div className="aspect-square bg-sheet tone-light" />
+                <div className="aspect-square hatch" />
+              </div>
             </div>
-          </dl>
+          </div>
+
+          <div className="border-2 border-ink bg-sheet p-3">
+            <p className="text-xs font-medium">Support Your name</p>
+            <div className="mt-2 border-2 border-ink px-2 py-1 text-xs tabular">₹ 100</div>
+            <div className="mt-1.5 border border-rule-strong px-2 py-1 text-[0.7rem] text-ink-faint">
+              Name (optional)
+            </div>
+            <div className="mt-1.5 h-9 border border-rule-strong px-2 py-1 text-[0.7rem] text-ink-faint">
+              Message
+            </div>
+            <div className="mt-2 border-2 border-ink bg-shu py-1.5 text-center text-xs font-medium text-sheet">
+              Support ₹100
+            </div>
+            <p className="mt-2 text-[0.65rem] leading-snug text-ink-soft">
+              UPI, cards, net banking. Or pay their UPI ID directly: no fee, not anonymous.
+            </p>
+          </div>
         </div>
       </div>
-      <figcaption className="mt-3 text-sm text-ink-soft">
-        The plainest starting layout. Every part of it, from typefaces to backgrounds, can be
-        restyled; only the support panel keeps a fixed, recognisable form.
+      <figcaption className="mt-4 text-sm text-ink-soft">
+        The starting layout: cover, about, gallery and a support panel. Restyle every part of it;
+        only the support panel keeps its recognisable form.
       </figcaption>
     </figure>
   );

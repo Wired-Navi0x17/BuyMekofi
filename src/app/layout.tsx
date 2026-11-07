@@ -1,14 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Instrument_Serif } from "next/font/google";
+import { Dela_Gothic_One, Geist } from "next/font/google";
 import { brand } from "@/config/brand";
 import "./globals.css";
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
+const delaGothic = Dela_Gothic_One({
+  variable: "--font-dela-gothic",
   subsets: ["latin"],
   weight: "400",
-  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -21,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4f0e6",
+  themeColor: "#f5efe3",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -32,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-scroll-behavior="smooth"
       // Extensions (password managers, translators) add attributes to <html>.
       suppressHydrationWarning
-      className={`${geist.variable} ${instrumentSerif.variable} antialiased`}
+      className={`${geist.variable} ${delaGothic.variable} antialiased`}
     >
       <body className="min-h-[100dvh] bg-paper text-ink">{children}</body>
     </html>

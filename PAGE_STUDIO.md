@@ -85,3 +85,18 @@ The pasted reference uses no JavaScript, only HTML structure and CSS effects. Ev
 
 - **v1 (Milestone 4):** theme layer; flow layout; Identity, Text, Image, Links, Portfolio, Gallery, Quote, Divider and Support blocks; publish and versions.
 - **v2 (Milestone 10):** canvas layout, Collage, Tabs, Reveal cards, interactions, curated embeds, and sandboxed custom CSS.
+
+## 6. Default template: "Café" (the founder's reference, 2026-11-07)
+
+Every new page starts from this structure. It's the familiar creator-support layout, drawn in our own manga-café style: inked panels, screentone and a hanko-red support button. It is not a copy of any other site's look.
+
+1. **Cover art band** (3:1), uploaded by the creator. Before an upload it shows screentone and speed lines. It can carry an optional credit line ("Cover art by …").
+2. **Identity row:** a square avatar overlapping the cover, display name and @handle. On the right are **Support** (hanko red, opens or scrolls to the support panel) and **Share**.
+3. **Tabs:** About · Gallery · Posts · Shop. Posts and Shop appear only once those modules exist (see the roadmap). We never show empty tabs.
+4. **Two columns:**
+   - **Left:** the About panel (bio, website link, social icons), a Gallery strip with a "View gallery" link, and Supporters.
+   - **Right:** the **Support panel**: amount in ₹ with presets, display name (optional), message, a public-anonymity toggle, and a "Support ₹N" button. Under it, the Direct UPI option with its plain-language note.
+5. **Supporters:** the newest supporters, showing only real, gateway-verified contributions. A supporter who chose anonymity appears as "Someone". With no supporters, the panel shows an empty state, never placeholder people.
+6. **No vanity numbers:** no follower counts until a follow feature exists, and no "sold" counts until a shop exists.
+
+Studio treats each of these as a block, so creators can reorder, restyle or remove everything except the Support panel.

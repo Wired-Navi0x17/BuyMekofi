@@ -7,46 +7,71 @@ const container = "mx-auto max-w-6xl px-4 md:px-8";
 
 const steps = [
   {
+    sfx: "Claim",
     title: "Claim your username",
     body: `Your page lives at ${profileUrlFor("yourname")}. Short, lowercase, and yours as long as the account is active.`,
   },
   {
+    sfx: "Design",
     title: "Design it like your own site",
     body: "Choose a layout, then change everything about it: typefaces, colours, backgrounds, image shapes, sections and the way things move on hover. Add your work and the projects you want seen first. The page is useful before anyone pays you anything.",
   },
   {
+    sfx: "Share",
     title: "Share one link",
     body: "Put it in your Instagram bio, your YouTube description, your newsletter footer. Visitors see your work and, at the bottom, a way to support it.",
   },
   {
+    sfx: "Support",
     title: "Get supported",
     body: "Supporters pay without creating an account. They choose whether their name appears on your page.",
   },
 ];
 
 export function HowItWorks() {
+  // A manga page, not a card row: panels of different sizes and tones,
+  // read in order, with the last one framed by focus lines.
+  const layout = ["md:col-span-6", "md:col-span-3", "md:col-span-3", "md:col-span-6"];
+  const tones = ["tone-light", "tone-mid", "", ""];
   return (
-    <section
-      id="how-it-works"
-      aria-labelledby="how-title"
-      className="border-t border-rule section-gap"
-    >
-      <div className={`${container} grid gap-10 md:grid-cols-[1fr_1.5fr] md:gap-16`}>
+    <section id="how-it-works" aria-labelledby="how-title" className="section-gap">
+      <div className={container}>
         <h2
           id="how-title"
-          className="font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1] tracking-tight text-balance md:sticky md:top-10 md:self-start"
+          className="max-w-[22ch] font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.06] tracking-[-0.01em] text-balance"
         >
-          From sign-up to your first supporter.
+          From sign-up to your first supporter, in four panels.
         </h2>
-        <ol className="divide-y divide-rule border-y border-rule">
+        <ol className="mt-10 grid gap-3 md:grid-cols-6">
           {steps.map((step, i) => (
-            <li key={step.title} className="grid grid-cols-[3rem_1fr] gap-4 py-6">
-              <span className="pt-0.5 text-sm tabular text-cherry">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div>
-                <h3 className="text-lg font-medium">{step.title}</h3>
-                <p className="mt-1.5 max-w-[60ch] leading-relaxed text-ink-soft">{step.body}</p>
+            <li
+              key={step.title}
+              className={`relative overflow-hidden panel p-5 md:p-7 ${layout[i]}`}
+            >
+              {tones[i] && (
+                <div
+                  aria-hidden
+                  className={`pointer-events-none absolute inset-y-0 right-0 w-2/3 opacity-20 ${tones[i]} [mask-image:linear-gradient(to_left,black,transparent)]`}
+                />
+              )}
+              {i === 3 && (
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 speedlines [mask-image:radial-gradient(closest-side_at_85%_50%,black,transparent)]"
+                />
+              )}
+              <div className="relative">
+                <span className="inline-block bg-ink px-2 py-0.5 text-xs tabular text-sheet">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p
+                  aria-hidden
+                  className="mt-4 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-none text-shu"
+                >
+                  {step.sfx}
+                </p>
+                <h3 className="mt-3 text-lg font-medium">{step.title}</h3>
+                <p className="mt-1.5 max-w-[56ch] leading-relaxed text-ink-soft">{step.body}</p>
               </div>
             </li>
           ))}
@@ -84,11 +109,11 @@ const routes = [
 
 export function PaymentRoutes() {
   return (
-    <section aria-labelledby="routes-title" className="border-t border-rule section-gap">
+    <section aria-labelledby="routes-title" className="section-gap">
       <div className={container}>
         <h2
           id="routes-title"
-          className="max-w-[24ch] font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1] tracking-tight text-balance"
+          className="max-w-[24ch] font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.06] tracking-[-0.01em] text-balance"
         >
           Two ways money can reach you.
         </h2>
@@ -96,19 +121,16 @@ export function PaymentRoutes() {
           They work differently, so the support panel shows them as two separate choices and says
           plainly what each one means.
         </p>
-        <div className="mt-12 grid gap-12 md:grid-cols-2 md:gap-0">
-          {routes.map((route, i) => (
-            <div
-              key={route.name}
-              className={i === 1 ? "md:border-l md:border-rule md:pl-10" : "md:pr-10"}
-            >
-              <h3 className="text-xl font-medium">{route.name}</h3>
-              <p className="mt-1.5 leading-relaxed text-ink-soft">{route.summary}</p>
-              <dl className="mt-6 divide-y divide-rule border-y border-rule">
+        <div className="mt-10 grid gap-3 md:grid-cols-2">
+          {routes.map((route) => (
+            <div key={route.name} className="panel p-5 md:p-7">
+              <h3 className="font-display text-2xl">{route.name}</h3>
+              <p className="mt-2 leading-relaxed text-ink-soft">{route.summary}</p>
+              <dl className="mt-6 divide-y divide-rule border-y-2 border-ink">
                 {route.rows.map(([term, detail]) => (
                   <div
                     key={term}
-                    className="grid grid-cols-[10rem_1fr] gap-4 py-3 text-[0.9375rem]"
+                    className="grid gap-1 py-3 text-[0.9375rem] sm:grid-cols-[10rem_1fr] sm:gap-4"
                   >
                     <dt className="text-ink-soft">{term}</dt>
                     <dd>{detail}</dd>
@@ -142,50 +164,52 @@ export function Pricing() {
   ] as const;
 
   return (
-    <section
-      id="pricing"
-      aria-labelledby="pricing-title"
-      className="border-t border-rule section-gap"
-    >
-      <div className={`${container} grid gap-12 md:grid-cols-[1.5fr_1fr] md:gap-16`}>
+    <section id="pricing" aria-labelledby="pricing-title" className="section-gap">
+      <div className={`${container} grid gap-10 md:grid-cols-[1.5fr_1fr] md:gap-14`}>
         <div>
           <h2
             id="pricing-title"
-            className="font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1] tracking-tight text-balance"
+            className="font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.06] tracking-[-0.01em] text-balance"
           >
             You pay when you are paid. Not before.
           </h2>
-          <table className="mt-10 w-full border-collapse text-left">
-            <caption className="sr-only">{brand.name} pricing</caption>
-            <thead>
-              <tr className="border-b border-ink text-sm">
-                <th scope="col" className="pb-2 font-normal text-ink-soft">
-                  What
-                </th>
-                <th scope="col" className="pb-2 text-right font-normal text-ink-soft">
-                  Rate
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-rule">
-              {rows.map(([what, rate, note]) => (
-                <tr key={what}>
-                  <th scope="row" className="py-4 pr-6 align-top font-normal">
-                    <span className="block font-medium">{what}</span>
-                    <span className="mt-0.5 block text-sm text-ink-soft">{note}</span>
-                  </th>
-                  <td className="py-4 text-right align-top text-lg tabular">{rate}</td>
+          {/* The pricing is a café menu: item, dotted leader, price. */}
+          <div className="mt-10 panel p-5 press-shadow md:p-8">
+            <p className="font-display text-xl">Menu</p>
+            <table className="mt-4 w-full border-collapse text-left">
+              <caption className="sr-only">{brand.name} pricing</caption>
+              <thead className="sr-only">
+                <tr>
+                  <th scope="col">What</th>
+                  <th scope="col">Rate</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {rows.map(([what, rate, note]) => (
+                  <tr key={what} className="align-baseline">
+                    <th scope="row" className="py-3 pr-3 font-normal">
+                      <span className="flex items-baseline gap-2">
+                        <span className="font-medium">{what}</span>
+                        <span
+                          aria-hidden
+                          className="min-w-6 flex-1 translate-y-[-0.2em] border-b-2 border-dotted border-ink-faint"
+                        />
+                      </span>
+                      <span className="mt-0.5 block text-sm text-ink-soft">{note}</span>
+                    </th>
+                    <td className="py-3 text-right text-xl font-medium tabular">{rate}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <aside aria-labelledby="example-title" className="md:pt-24">
+        <aside aria-labelledby="example-title" className="md:pt-28">
           <h3 id="example-title" className="text-sm font-medium">
             Worked example, after the voucher period
           </h3>
-          <dl className="mt-3 border-t border-ink text-[0.9375rem]">
+          <dl className="mt-3 border-t-2 border-ink text-[0.9375rem]">
             <div className="flex justify-between border-b border-rule py-3">
               <dt>Contribution</dt>
               <dd className="tabular">{formatInr(example.amountPaise)}</dd>
@@ -194,7 +218,7 @@ export function Pricing() {
               <dt className="text-ink-soft">Commission at {formatBps(example.rateBps)}</dt>
               <dd className="tabular text-ink-soft">−{formatInr(example.commissionPaise)}</dd>
             </div>
-            <div className="flex justify-between border-b border-ink py-3 font-medium">
+            <div className="flex justify-between border-b-2 border-ink py-3 font-medium">
               <dt>Your share</dt>
               <dd className="tabular">{formatInr(example.creatorSharePaise)}</dd>
             </div>
@@ -239,27 +263,30 @@ const faqs = [
 
 export function Faq() {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="border-t border-rule section-gap">
+    <section id="faq" aria-labelledby="faq-title" className="section-gap">
       <div className={`${container} grid gap-10 md:grid-cols-[1fr_1.5fr] md:gap-16`}>
         <h2
           id="faq-title"
-          className="font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1] tracking-tight text-balance"
+          className="font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.06] tracking-[-0.01em] text-balance md:sticky md:top-10 md:self-start"
         >
           Questions, answered plainly.
         </h2>
-        <div className="divide-y divide-rule border-y border-rule">
+        <div className="grid gap-3">
           {faqs.map((f) => (
-            <details key={f.q} className="group py-1">
-              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-6 py-3 text-lg font-medium [&::-webkit-details-marker]:hidden">
+            <details key={f.q} className="group panel">
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-6 px-5 py-3 text-lg font-medium [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <span
                   aria-hidden
-                  className="text-xl tabular text-ink-soft transition-transform duration-200 group-open:rotate-45"
+                  className="grid size-7 shrink-0 place-items-center border-2 border-ink text-base leading-none transition-[transform,background-color,color] duration-200 group-open:rotate-45 group-open:bg-ink group-open:text-sheet"
                 >
                   +
                 </span>
               </summary>
-              <p className="max-w-[62ch] pb-5 leading-relaxed text-ink-soft">{f.a}</p>
+              {/* Narration box: the answer is boxed like a manga caption. */}
+              <p className="mx-5 mb-5 max-w-[62ch] border-l-4 border-ink bg-paper px-4 py-3 leading-relaxed text-ink-soft">
+                {f.a}
+              </p>
             </details>
           ))}
         </div>
@@ -270,7 +297,7 @@ export function Faq() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-ink">
+    <footer className="border-t-2 border-ink">
       <div
         className={`${container} flex flex-wrap items-center justify-between gap-4 py-8 text-sm text-ink-soft`}
       >

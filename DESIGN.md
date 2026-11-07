@@ -8,6 +8,8 @@ VARIANCE: 6 | MOTION: 6 on the landing intro, 3 inside the app | DENSITY: 4 on m
 
 ## 1. Atmosphere
 
+**Theme (2026-11-07): manga café.** The founder asked for a manga-café feel: newsprint paper, brush ink, inked panel borders, screentone, focus lines and a single hanko-red spot colour. Pricing reads like a café menu, and the steps read like a manga page. The paper-and-ink basis below still holds; manga is ink on paper.
+
 Paper and ink. The site reads like a well-made notebook: warm off-white paper, charcoal ink, hairline rules and no rounded corners. It looks calm and exact, the way a receipt you trust does. Motion is reserved for one moment (the intro) and for confirming things. Money is always set with tabular figures and right-aligned, the way a ledger is.
 
 ## 1b. Signature element (exactly one)
@@ -38,17 +40,24 @@ There is no dark theme at launch. A dark "night ink" theme is a later decision, 
 
 ## 3. Typography
 
-- **Display (marketing only):** `Instrument Serif`, regular and italic. Sizes from `clamp(2.5rem, 6vw, 5rem)`, `tracking-tight`, `leading-[0.95]`. Hierarchy comes from size steps and italics, never from a giant screaming H1. **No serif in the dashboard or admin.**
+- **Display (marketing headings only):** `Dela Gothic One`, a heavy Japanese poster gothic used for headings and panel SFX. No italics; hierarchy comes from size and the shu colour.
 - **UI and body:** `Geist`. Body is 1rem (16px), with `leading-relaxed` and a maximum line length of 65ch.
 - **Numbers:** `Geist` with `tabular-nums` and a slashed zero for every amount, rate, table date and id. Rupee amounts are written `₹1,250.00`, using Indian digit grouping (`en-IN`).
 - **Wordmark:** outlines of Mr Dafoe (SIL OFL) converted to SVG paths. The font file is not shipped.
-- **Limit: three typefaces on the platform UI:** Geist, Instrument Serif, and the Mr Dafoe wordmark, which ships as SVG artwork rather than a loaded font. Creator pages have their own cap of 3 typefaces (PAGE_STUDIO.md).
+- **Limit: three typefaces on the platform UI:** Geist, Dela Gothic One, and the Mr Dafoe wordmark, which ships as SVG artwork rather than a loaded font. Creator pages have their own cap of 3 typefaces (PAGE_STUDIO.md).
 - **Banned:** Inter, a system-ui fallback used as the brand face, and serif in app UI.
+
+## 2b. Manga materials
+
+- `panel`: a 2px ink border on `sheet`. Sections are panels, not floating cards.
+- `press-shadow`: a hard 4px ink offset, only on things you press (Claim, primary buttons, the example page). Pressing collapses it like a rubber stamp.
+- `tone-light`, `tone-mid`, `tone-dense`: CSS halftone dots, always masked to fade, and never behind body text at full strength.
+- `speedlines`: focus lines, at most once per view, framing the thing that matters.
 
 ## 4. Components
 
 - **Radius: 0 everywhere.** `--radius-*` is set to 0 in the theme. Avatars are square too.
-- **Buttons:** `primary` has an ink fill and paper text. `secondary` has a 1px ink border on a transparent background. `quiet` is text in ink-soft with an underline on hover. They are 44px high (40px in dense tables), use `translate-y-px` on `:active`, have no glow and no gradients, and show a 2px cherry focus ring with a 2px offset.
+- **Buttons:** `primary` has an ink fill and paper text, and `stamp` is shu for Support and Claim; both have a 2px ink border and the press shadow. `secondary` has a 1px ink border on a transparent background. `quiet` is text in ink-soft with an underline on hover. They are 44px high (40px in dense tables), use `translate-y-px` on `:active`, have no glow and no gradients, and show a 2px cherry focus ring with a 2px offset.
 - **Inputs:** label above, helper text below the label, error below the field. 1px `rule` border on `sheet`. The border turns `ink` on focus, plus a cherry ring. No floating labels.
 - **Surfaces:** no cards stacked on cards. Sections are separated by `border-t border-rule` and whitespace. A table is a ruled list.
 - **No tags.** No eyebrow labels or pills above headings, and no "New" chips. Status in tables is plain text in a semantic colour with an icon.

@@ -12,7 +12,7 @@ type FieldProps = Omit<ComponentProps<"input">, "id"> & {
 };
 
 const inputClass =
-  "block w-full min-h-11 border border-rule bg-sheet px-3 text-base text-ink placeholder:text-ink-faint transition-colors duration-150 hover:border-rule-strong focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-cherry aria-[invalid=true]:border-brick";
+  "block w-full min-h-11 border border-rule bg-sheet px-3 text-base text-ink placeholder:text-ink-faint transition-colors duration-150 hover:border-rule-strong focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-shu aria-[invalid=true]:border-brick";
 
 /** Label above, hint under the label, error below the input (DESIGN.md §4). */
 export function Field({

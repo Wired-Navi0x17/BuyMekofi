@@ -81,6 +81,22 @@ Not done yet:
 
 Verification: lint, typecheck and unit tests pass, and 29 e2e tests pass (new: scroll back after the burn, and nav links that glide).
 
+## Manga café theme + Claim box (2026-11-07) ✅
+
+- **Theme:** newsprint paper, brush ink, one hanko-vermilion accent (`shu`). Dela Gothic One replaces Instrument Serif, so the platform still uses three typefaces. Inked panels, screentone, focus lines and stamp-press buttons.
+- **Landing:**
+  - "How it works" is a manga page of four panels;
+  - pricing is a café menu with dotted leaders;
+  - the payment routes are panels;
+  - FAQ answers sit in narration boxes;
+  - the hero example shows the Café default page (cover, avatar, Support, tabs, About, Gallery and the support panel).
+- **Claim box:** `coffeaetthea.in/[name] Claim`. Availability comes from the `username_availability()` SQL function (migration `20261107140000`, applied). A free name goes to `/register?username=` and is carried into sign-up metadata as a prefill only.
+- **Intro:** plays on **every** landing visit, at the founder's request. It's skipped for reduced motion, for anchor arrivals (`/#faq`) and for `?nointro`.
+- **Header links:** now plain in-page anchors, so smooth scrolling also works when the visitor arrived with a query string.
+- **Plan:** PAGE_STUDIO.md §6 defines the default "Café" creator template from the founder's reference.
+
+Verification: lint and typecheck pass, there are 70 unit tests, and 33 e2e tests pass (new: Claim errors, the Claim → register prefill, and the intro on every visit).
+
 ## Next: Milestone 3 (onboarding and public profile)
 
 Username claim with live availability, profile basics, avatar upload (Storage bucket and policies), the `page_documents` model with a shared renderer, and the public `/[username]` page. Then Page Studio v1 (Milestone 4) and Admin + Site CMS (Milestone 5).

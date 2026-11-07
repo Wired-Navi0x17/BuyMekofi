@@ -13,9 +13,11 @@ import {
   type FormState,
 } from "@/modules/auth/actions";
 import { PASSWORD_MIN } from "@/modules/auth/schemas";
+import { normaliseUsername, validateUsernameFormat } from "@/modules/profiles/username";
+import { brand } from "@/config/brand";
 
 const idle: FormState = { status: "idle" };
-const linkClass = "text-ink underline decoration-1 underline-offset-4 hover:text-cherry";
+const linkClass = "text-ink underline decoration-1 underline-offset-4 hover:text-shu";
 
 function Heading({ title, lead }: { title: string; lead?: string }) {
   return (
@@ -80,6 +82,9 @@ export function LoginForm() {
 
 export function RegisterForm() {
   const [state, action, pending] = useActionState(signUp, idle);
+  const params = useSearchParams();
+  const claimed = normaliseUsername(params.get("username") ?? "");
+  const claim = validateUsernameFormat(claimed);
 
   if (state.status === "sent") {
     return (
@@ -106,7 +111,17 @@ export function RegisterForm() {
         title="Create your page"
         lead="An account is free. You'll choose your username in the next step."
       />
+      {claim.ok && (
+        <p className="mb-6 border-l-2 border-shu py-1 pl-3 text-sm">
+          Claiming{" "}
+          <span className="font-medium tabular">
+            {brand.domain}/{claim.username}
+          </span>
+          . It becomes yours when you finish setting up.
+        </p>
+      )}
       <form action={action} className="grid gap-5" noValidate>
+        {claim.ok && <input type="hidden" name="username" value={claim.username} />}
         {state.message && <FormMessage tone="error">{state.message}</FormMessage>}
         <Field
           label="Email"
