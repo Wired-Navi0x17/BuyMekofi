@@ -25,14 +25,14 @@ export function PageSpecimen() {
 
         <div className="px-4 pb-3">
           <div className="flex items-end justify-between gap-3">
-            <div className="relative -mt-8 grid size-16 shrink-0 place-items-center border-2 border-ink bg-shu font-display text-2xl text-sheet">
+            <div className="relative -mt-8 grid size-16 shrink-0 place-items-center border-2 border-ink bg-cherry font-display text-2xl text-sheet">
               Y
             </div>
             <div className="flex gap-2 pt-3">
               <div className="border-2 border-ink bg-sheet px-3 py-1 text-xs font-medium">
                 Share
               </div>
-              <div className="border-2 border-ink bg-shu px-3 py-1 text-xs font-medium text-sheet press-shadow">
+              <div className="border-2 border-ink bg-cherry px-3 py-1 text-xs font-medium text-sheet press-shadow">
                 Support
               </div>
             </div>
@@ -42,7 +42,7 @@ export function PageSpecimen() {
         </div>
 
         <div className="flex gap-5 border-y-2 border-ink px-4 text-xs font-medium">
-          <span className="border-b-[3px] border-shu py-2">About</span>
+          <span className="border-b-[3px] border-cherry py-2">About</span>
           <span className="py-2 text-ink-soft">Gallery</span>
           <span className="py-2 text-ink-soft">Posts</span>
         </div>
@@ -79,7 +79,7 @@ export function PageSpecimen() {
             <div className="mt-1.5 h-9 border border-rule-strong px-2 py-1 text-[0.7rem] text-ink-faint">
               Message
             </div>
-            <div className="mt-2 border-2 border-ink bg-shu py-1.5 text-center text-xs font-medium text-sheet">
+            <div className="mt-2 border-2 border-ink bg-cherry py-1.5 text-center text-xs font-medium text-sheet">
               Support ₹100
             </div>
             <p className="mt-2 text-[0.65rem] leading-snug text-ink-soft">

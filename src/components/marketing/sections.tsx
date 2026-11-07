@@ -64,10 +64,7 @@ export function HowItWorks() {
                 <span className="inline-block bg-ink px-2 py-0.5 text-xs tabular text-sheet">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p
-                  aria-hidden
-                  className="mt-4 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-none text-shu"
-                >
+                <p aria-hidden className="mt-4 sfx text-[clamp(2rem,3.4vw,2.9rem)] leading-none">
                   {step.sfx}
                 </p>
                 <h3 className="mt-3 text-lg font-medium">{step.title}</h3>
@@ -283,8 +280,8 @@ export function Faq() {
                   +
                 </span>
               </summary>
-              {/* Narration box: the answer is boxed like a manga caption. */}
-              <p className="mx-5 mb-5 max-w-[62ch] border-l-4 border-ink bg-paper px-4 py-3 leading-relaxed text-ink-soft">
+
+              <p className="mx-5 mb-5 max-w-[62ch] border-t-2 border-dashed border-ink pt-4 leading-relaxed text-ink-soft">
                 {f.a}
               </p>
             </details>

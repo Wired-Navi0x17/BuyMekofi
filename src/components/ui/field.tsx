@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState, type ComponentProps, type ReactNode } from "react";
-import { WarningCircle } from "@phosphor-icons/react";
+import { CheckCircle, WarningCircle } from "@phosphor-icons/react";
 
 type FieldProps = Omit<ComponentProps<"input">, "id"> & {
   label: string;
@@ -12,7 +12,7 @@ type FieldProps = Omit<ComponentProps<"input">, "id"> & {
 };
 
 const inputClass =
-  "block w-full min-h-11 border border-rule bg-sheet px-3 text-base text-ink placeholder:text-ink-faint transition-colors duration-150 hover:border-rule-strong focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-shu aria-[invalid=true]:border-brick";
+  "block w-full min-h-11 border border-rule bg-sheet px-3 text-base text-ink placeholder:text-ink-faint transition-colors duration-150 hover:border-rule-strong focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-cherry aria-[invalid=true]:border-brick";
 
 /** Label above, hint under the label, error below the input (DESIGN.md §4). */
 export function Field({
@@ -73,12 +73,14 @@ export function Field({
 
 /** Form-level message: errors announce assertively, notices politely. */
 export function FormMessage({ tone, children }: { tone: "error" | "notice"; children: ReactNode }) {
+  const Icon = tone === "error" ? WarningCircle : CheckCircle;
   return (
     <p
       role={tone === "error" ? "alert" : "status"}
-      className={`border-l-2 py-1 pl-3 text-sm ${tone === "error" ? "border-brick text-brick" : "border-leaf text-ink"}`}
+      className={`flex items-start gap-2 border-2 px-3 py-2.5 text-sm ${tone === "error" ? "border-brick text-brick" : "border-ink text-ink"}`}
     >
-      {children}
+      <Icon aria-hidden size={16} className="mt-0.5 shrink-0" />
+      <span>{children}</span>
     </p>
   );
 }

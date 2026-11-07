@@ -13,7 +13,7 @@ const pressable =
 
 const variants: Record<Variant, string> = {
   primary: `bg-ink text-sheet border-2 border-ink ${pressable}`,
-  stamp: `bg-shu text-sheet border-2 border-ink ${pressable}`,
+  stamp: `bg-cherry text-sheet border-2 border-ink ${pressable}`,
   secondary:
     "border-2 border-ink bg-sheet text-ink hover:bg-ink hover:text-sheet active:translate-y-px",
   quiet: "text-ink-soft hover:text-ink underline-offset-4 decoration-1 hover:underline",

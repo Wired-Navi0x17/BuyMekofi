@@ -18,7 +18,7 @@ export function ClaimBox() {
       <label htmlFor={id} className="sr-only">
         Choose your page address
       </label>
-      <div className="flex min-h-14 items-stretch panel press-shadow focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-shu">
+      <div className="flex min-h-14 items-stretch panel press-shadow focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-cherry">
         <span
           aria-hidden
           className="flex items-center pr-0.5 pl-4 tabular text-ink-soft select-none"
@@ -41,7 +41,7 @@ export function ClaimBox() {
         <button
           type="submit"
           disabled={pending}
-          className="border-l-2 border-ink bg-shu px-5 font-medium text-sheet transition-colors hover:bg-ink disabled:opacity-60 sm:px-7"
+          className="border-l-2 border-ink bg-cherry px-5 font-medium text-sheet transition-colors hover:bg-ink disabled:opacity-60 sm:px-7"
         >
           {pending ? "Checking…" : "Claim"}
         </button>

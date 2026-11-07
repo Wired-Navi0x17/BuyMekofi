@@ -2,18 +2,18 @@
 
 /* Design tokens: DESIGN.md §2–§4 is the source of truth. */
 @theme {
-  /* Manga café: newsprint paper, brush ink, one hanko-vermilion spot colour. */
-  --color-paper: #f5efe3;
-  --color-sheet: #fffcf5;
-  --color-ink: #1b1a18;
-  --color-ink-soft: #55504a;
-  --color-ink-faint: #8a8378;
-  --color-rule: #d9d0bf;
-  --color-rule-strong: #b3a993;
-  --color-shu: #c23b22;
-  --color-leaf: #3d6a35;
-  --color-turmeric: #8a5d00;
-  --color-brick: #9e1c1c;
+  /* Comic manga on the original paper-and-ink palette: black-and-white
+     first, one cherry spot colour, no oranges (founder, 2026-11-07). */
+  --color-paper: #f4f0e6;
+  --color-sheet: #fbf8f1;
+  --color-ink: #23201d;
+  --color-ink-soft: #5c5750;
+  --color-ink-faint: #8a847a;
+  --color-rule: #d8d1c3;
+  --color-rule-strong: #b9b0a0;
+  --color-cherry: #8e2c3a;
+  --color-leaf: #3f6b3a;
+  --color-brick: #a3192f;
 
   --font-sans: var(--font-geist), ui-sans-serif, sans-serif;
   --font-display: var(--font-dela-gothic), var(--font-geist), sans-serif;
@@ -51,11 +51,11 @@
     line-height: 1.6;
   }
   ::selection {
-    background: var(--color-shu);
+    background: var(--color-cherry);
     color: var(--color-sheet);
   }
   :focus-visible {
-    outline: 2px solid var(--color-shu);
+    outline: 2px solid var(--color-cherry);
     outline-offset: 2px;
   }
   /* Belt and braces: nothing in this product is rounded. */
@@ -166,13 +166,23 @@
   );
 }
 
-/* An inked manga panel: heavy border, flat sheet. */
+/* An inked comic panel: heavy border, flat sheet. */
 @utility panel {
-  border: 2px solid var(--color-ink);
+  border: 3px solid var(--color-ink);
   background-color: var(--color-sheet);
 }
 
 /* Hard offset shadow for the few things you press (CTAs, claim box). */
 @utility press-shadow {
   box-shadow: 4px 4px 0 var(--color-ink);
+}
+
+/* Comic SFX lettering: paper-filled letters, ink outline, hard ink drop. */
+@utility sfx {
+  font-family: var(--font-display);
+  color: var(--color-sheet);
+  -webkit-text-stroke: 2px var(--color-ink);
+  paint-order: stroke fill;
+  text-shadow: 3px 3px 0 var(--color-ink);
+  letter-spacing: 0.02em;
 }

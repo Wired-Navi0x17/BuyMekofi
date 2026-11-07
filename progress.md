@@ -97,6 +97,13 @@ Verification: lint, typecheck and unit tests pass, and 29 e2e tests pass (new: s
 
 Verification: lint and typecheck pass, there are 70 unit tests, and 33 e2e tests pass (new: Claim errors, the Claim → register prefill, and the intro on every visit).
 
+## Comic restyle, log fixes, Supabase settings (2026-11-07) ✅
+
+- **Palette:** back to the original paper, ink and cherry palette, with the comic manga treatment layered on top: 3px panels, outlined SFX lettering for the steps, screentone and focus lines. No orange (shu and turmeric removed). Side accent bars are removed everywhere (FAQ answers, form messages, the register claim notice).
+- **Log fix:** the `/dashboard` "Date.now() while prerendering" error. `getCurrentUser()` now calls `await connection()` first, so session checks always run per request.
+- **Supabase:** auth settings were pushed with `supabase config push` after a reviewed diff; `config.toml` was first aligned with the remote so nothing else changed. Changes: redirect URLs for `localhost:3000/**` and `localhost:3100/**`, minimum password length 10, and secure password change. The remote now has zero differences from `config.toml`.
+- **Trademark (PRD D1):** "Coffea" is an existing Indian café chain. See the PRD. The official IP India search needs the founder's own OTP login.
+
 ## Next: Milestone 3 (onboarding and public profile)
 
 Username claim with live availability, profile basics, avatar upload (Storage bucket and policies), the `page_documents` model with a shared renderer, and the public `/[username]` page. Then Page Studio v1 (Milestone 4) and Admin + Site CMS (Milestone 5).

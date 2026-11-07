@@ -17,7 +17,7 @@ import { normaliseUsername, validateUsernameFormat } from "@/modules/profiles/us
 import { brand } from "@/config/brand";
 
 const idle: FormState = { status: "idle" };
-const linkClass = "text-ink underline decoration-1 underline-offset-4 hover:text-shu";
+const linkClass = "text-ink underline decoration-1 underline-offset-4 hover:text-cherry";
 
 function Heading({ title, lead }: { title: string; lead?: string }) {
   return (
@@ -112,7 +112,7 @@ export function RegisterForm() {
         lead="An account is free. You'll choose your username in the next step."
       />
       {claim.ok && (
-        <p className="mb-6 border-l-2 border-shu py-1 pl-3 text-sm">
+        <p className="mb-6 border-2 border-ink bg-sheet px-3 py-2.5 text-sm">
           Claiming{" "}
           <span className="font-medium tabular">
             {brand.domain}/{claim.username}

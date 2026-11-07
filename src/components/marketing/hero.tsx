@@ -18,7 +18,7 @@ export function Hero() {
             className="font-display text-[clamp(2rem,3.7vw,3.05rem)] leading-[1.08] tracking-[-0.01em] text-balance"
           >
             A page as personal as your own website.
-            <span className="mt-2 block text-shu">And a way to get paid for it.</span>
+            <span className="mt-2 block text-cherry">And a way to get paid for it.</span>
           </h1>
           <p className="mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-ink-soft">
             Shape it however you like: layouts, typefaces, colours, backgrounds, collages, tabs and

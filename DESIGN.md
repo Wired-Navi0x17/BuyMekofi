@@ -8,7 +8,7 @@ VARIANCE: 6 | MOTION: 6 on the landing intro, 3 inside the app | DENSITY: 4 on m
 
 ## 1. Atmosphere
 
-**Theme (2026-11-07): manga café.** The founder asked for a manga-café feel: newsprint paper, brush ink, inked panel borders, screentone, focus lines and a single hanko-red spot colour. Pricing reads like a café menu, and the steps read like a manga page. The paper-and-ink basis below still holds; manga is ink on paper.
+**Theme (2026-11-07, revised): comic manga on the original paper-and-ink palette.** It's black-and-white first, like a printed manga, with inked panel borders (3px), screentone, focus lines and outlined SFX lettering. Cherry is the one spot colour. **No orange anywhere** (founder). There are also no accent bars down one side of a box; boxes are fully bordered or not bordered at all.
 
 Paper and ink. The site reads like a well-made notebook: warm off-white paper, charcoal ink, hairline rules and no rounded corners. It looks calm and exact, the way a receipt you trust does. Motion is reserved for one moment (the intro) and for confirming things. Money is always set with tabular figures and right-aligned, the way a ledger is.
 
@@ -49,15 +49,16 @@ There is no dark theme at launch. A dark "night ink" theme is a later decision, 
 
 ## 2b. Manga materials
 
-- `panel`: a 2px ink border on `sheet`. Sections are panels, not floating cards.
+- `panel`: a 3px ink border on `sheet`. Sections are panels, not floating cards.
 - `press-shadow`: a hard 4px ink offset, only on things you press (Claim, primary buttons, the example page). Pressing collapses it like a rubber stamp.
 - `tone-light`, `tone-mid`, `tone-dense`: CSS halftone dots, always masked to fade, and never behind body text at full strength.
+- `sfx`: comic sound-effect lettering, with paper fill, ink outline and a hard ink drop, for panel words like "Claim!".
 - `speedlines`: focus lines, at most once per view, framing the thing that matters.
 
 ## 4. Components
 
 - **Radius: 0 everywhere.** `--radius-*` is set to 0 in the theme. Avatars are square too.
-- **Buttons:** `primary` has an ink fill and paper text, and `stamp` is shu for Support and Claim; both have a 2px ink border and the press shadow. `secondary` has a 1px ink border on a transparent background. `quiet` is text in ink-soft with an underline on hover. They are 44px high (40px in dense tables), use `translate-y-px` on `:active`, have no glow and no gradients, and show a 2px cherry focus ring with a 2px offset.
+- **Buttons:** `primary` has an ink fill and paper text, and `stamp` is cherry for Support and Claim; both have a 2px ink border and the press shadow. `secondary` has a 1px ink border on a transparent background. `quiet` is text in ink-soft with an underline on hover. They are 44px high (40px in dense tables), use `translate-y-px` on `:active`, have no glow and no gradients, and show a 2px cherry focus ring with a 2px offset.
 - **Inputs:** label above, helper text below the label, error below the field. 1px `rule` border on `sheet`. The border turns `ink` on focus, plus a cherry ring. No floating labels.
 - **Surfaces:** no cards stacked on cards. Sections are separated by `border-t border-rule` and whitespace. A table is a ruled list.
 - **No tags.** No eyebrow labels or pills above headings, and no "New" chips. Status in tables is plain text in a semantic colour with an icon.
