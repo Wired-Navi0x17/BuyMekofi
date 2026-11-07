@@ -19,8 +19,8 @@ Done and verified:
 - `Button` and `ButtonLink` primitives.
 - Environment validation (`src/lib/env/*`). Server secrets are behind `server-only`. Mock payments are refused in production, and live payments are refused without an approval flag.
 - Money and commission maths, written test-first: `src/lib/money.ts`, `src/modules/commission/calculate.ts`.
-- Signature element: the Coffea wordmark is written in ink (CSS only, glyphs from Mr Dafoe under the OFL), and a WebGL sheet burns away on scroll (GSAP ScrollTrigger). A Skip button burns the sheet automatically. The intro is skipped for reduced motion, for returning visitors (localStorage), without JS (`noscript`) and without WebGL.
-- Landing page: hero, how it works, the two payment routes, a pricing ledger with a worked example computed by the real commission function, and FAQ. It states plainly that Coffea is in development and payments are not open.
+- Signature element: the Coffea et Thea wordmark is written in ink (CSS only, glyphs from Mr Dafoe under the OFL), and a WebGL sheet burns away on scroll (GSAP ScrollTrigger). A Skip button burns the sheet automatically. The intro is skipped for reduced motion, for returning visitors (localStorage), without JS (`noscript`) and without WebGL.
+- Landing page: hero, how it works, the two payment routes, a pricing ledger with a worked example computed by the real commission function, and FAQ. It states plainly that Coffea et Thea is in development and payments are not open.
 - `/login` and `/register` say honestly that accounts aren't open yet, and collect nothing.
 
 Verification: `pnpm lint`, `typecheck`, `test` (32 unit tests) and `build` all pass. `pnpm e2e` passes 14 tests (desktop and Pixel 7), covering: the wordmark is written, Skip works, scrolling removes the sheet, returning visitors skip the intro, reduced motion, the pricing figures, and no horizontal scroll.

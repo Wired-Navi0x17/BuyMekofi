@@ -1,4 +1,4 @@
-# Coffea
+# Coffea et Thea
 
 A creator page and support platform for India: one page with your links, your portfolio and a way for your audience to pay you.
 

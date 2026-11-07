@@ -14,7 +14,7 @@ export function SiteHeader() {
     <header className="border-b border-rule">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-3 md:px-8">
         <Link href="/" className="-my-1 block text-ink" aria-label={`${brand.name} home`}>
-          <Wordmark className="h-11 w-auto" />
+          <Wordmark className="h-7 w-auto md:h-10" />
         </Link>
         <nav aria-label="Main" className="hidden items-center gap-7 text-sm md:flex">
           {links.map((l) => (

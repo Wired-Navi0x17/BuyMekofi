@@ -1,11 +1,11 @@
 /**
  * Single source for the product name and public domain.
- * "Coffea" is a working name pending trademark clearance (PRD.md D1);
+ * "Coffea et Thea" (Latin botanical names: coffee and tea) is a working name pending trademark clearance (PRD.md D1);
  * renaming the product should only require editing this file.
  */
 export const brand = {
-  name: "Coffea",
-  domain: "coffea.in", // PRD.md D12: not yet registered or confirmed
+  name: "Coffea et Thea",
+  domain: "coffeaetthea.in", // PRD.md D12: not yet registered or confirmed
   tagline: "A page for your work, and a way to be paid for it.",
 } as const;
 

@@ -5,7 +5,7 @@ test.describe("landing intro", () => {
     await page.goto("/");
     const overlay = page.locator(".burn-overlay");
     await expect(overlay).toBeVisible();
-    await expect(overlay.getByRole("img", { name: "Coffea" })).toBeVisible();
+    await expect(overlay.getByRole("img", { name: "Coffea et Thea" })).toBeVisible();
     await expect(overlay).toHaveAttribute("data-ready", "true");
     await page.getByRole("button", { name: "Skip intro" }).click();
     await expect(overlay).toHaveCount(0, { timeout: 5_000 });

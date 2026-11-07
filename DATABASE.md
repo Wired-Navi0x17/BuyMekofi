@@ -152,7 +152,7 @@ Unique `(creator_id, campaign_id)`. A partial unique index allows **one introduc
 
 **`disputes`**: `id`, `payment_id`, `provider_dispute_id` unique, `amount_paise`, `status`, `reason_code`, `opened_at`, `resolved_at`.
 
-**`settlements`**: `id`, `creator_id`, `provider`, `provider_settlement_id` unique, `amount_paise`, `status`, `settled_at`. Mirrors what the provider reports. Coffea never initiates a settlement itself.
+**`settlements`**: `id`, `creator_id`, `provider`, `provider_settlement_id` unique, `amount_paise`, `status`, `settled_at`. Mirrors what the provider reports. Coffea et Thea never initiates a settlement itself.
 
 **`webhook_events`**: `id`, `provider`, `provider_event_id` (unique with `provider`), `event_type`, `signature_valid boolean`, `payload jsonb`, `received_at`, `processed_at null`, `processing_error null`. Events with invalid signatures are stored with `signature_valid=false` and never processed.
 
@@ -162,7 +162,7 @@ Unique `(creator_id, campaign_id)`. A partial unique index allows **one introduc
 
 **`ledger_entries`** (append-only): `id`, `transaction_id`, `account` (enum: `provider_clearing`, `creator_payable`, `platform_commission`, `refunds_clearing`), `creator_id null`, `direction` ('debit','credit'), `amount_paise > 0`. A deferred constraint trigger checks that debits equal credits within each transaction.
 
-Coffea does not hold funds. The ledger records how the provider split each payment, so commission reports and creator statements can be reproduced and reconciled against provider settlement reports.
+Coffea et Thea does not hold funds. The ledger records how the provider split each payment, so commission reports and creator statements can be reproduced and reconciled against provider settlement reports.
 
 ### Platform
 

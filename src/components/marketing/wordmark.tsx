@@ -3,9 +3,12 @@ import { brand } from "@/config/brand";
 import { wordmark } from "./wordmark-data";
 
 /** Pen timing per stroke, in writing order (seconds). */
-const STROKE_SECONDS = [0.9, 0.55, 0.6, 0.6, 0.45, 0.55] as const;
+// C o f f e | a, then e t (crossbar) | T-bar T-stem h-stem h-bowl e a
+const STROKE_SECONDS = [
+  0.68, 0.42, 0.45, 0.45, 0.34, 0.42, 0.34, 0.34, 0.18, 0.3, 0.3, 0.26, 0.34, 0.34, 0.42,
+] as const;
 const START_DELAY = 0.35;
-const GAP = 0.06;
+const GAP = 0.05;
 
 /** Precomputed once: when each stroke starts, and when writing ends. */
 const { timings, total } = wordmark.strokes.reduce(
@@ -26,7 +29,7 @@ type Props = {
 };
 
 /**
- * The Coffea wordmark. Static by default; `animated` draws it in ink with
+ * The brand wordmark. Static by default; `animated` draws it in ink with
  * CSS only (no JS), clipped by the glyph outlines. Reduced motion shows the
  * finished mark immediately (see globals.css `.ink-*`).
  */

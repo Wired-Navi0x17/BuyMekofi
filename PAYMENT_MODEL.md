@@ -1,20 +1,20 @@
 # Payment model
 
-**Status: no live payments.** No provider has approved Coffea's marketplace model (PRD D2). Until one does, and the founder explicitly approves going live, only the mock provider exists. Mock records carry `livemode=false` and show a visible TEST MODE label everywhere they appear.
+**Status: no live payments.** No provider has approved Coffea et Thea's marketplace model (PRD D2). Until one does, and the founder explicitly approves going live, only the mock provider exists. Mock records carry `livemode=false` and show a visible TEST MODE label everywhere they appear.
 
 ## 1. Two routes, kept separate
 
-|                                  | Direct UPI                            | Gateway                                                          |
-| -------------------------------- | ------------------------------------- | ---------------------------------------------------------------- |
-| Money path                       | supporter's bank → creator's bank     | supporter → provider → split → creator (and Coffea's commission) |
-| Coffea touches money             | never                                 | never; the provider settles to each party directly               |
-| Coffea can verify it happened    | **no**                                | yes, through a signed webhook                                    |
-| Commission                       | none (we can't deduct it)             | policy or voucher rate                                           |
-| Recorded as a payment            | no                                    | yes                                                              |
-| Shown in public support activity | no (PRD D8)                           | yes, subject to the supporter's anonymity choice                 |
-| Anonymous to the creator         | **no**: their UPI app shows the payer | optional, and still known to the provider and banks              |
+|                                       | Direct UPI                            | Gateway                                                                  |
+| ------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------ |
+| Money path                            | supporter's bank → creator's bank     | supporter → provider → split → creator (and Coffea et Thea's commission) |
+| Coffea et Thea touches money          | never                                 | never; the provider settles to each party directly                       |
+| Coffea et Thea can verify it happened | **no**                                | yes, through a signed webhook                                            |
+| Commission                            | none (we can't deduct it)             | policy or voucher rate                                                   |
+| Recorded as a payment                 | no                                    | yes                                                                      |
+| Shown in public support activity      | no (PRD D8)                           | yes, subject to the supporter's anonymity choice                         |
+| Anonymous to the creator              | **no**: their UPI app shows the payer | optional, and still known to the provider and banks                      |
 
-The interface presents these as two clearly different choices on the support panel. Direct UPI is labelled "Pay creator directly by UPI: no fee, your name is visible to them, not tracked on Coffea". It never looks like a lesser version of the gateway option.
+The interface presents these as two clearly different choices on the support panel. Direct UPI is labelled "Pay creator directly by UPI: no fee, your name is visible to them, not tracked on Coffea et Thea". It never looks like a lesser version of the gateway option.
 
 ## 2. Provider abstraction
 
@@ -49,6 +49,23 @@ Adapters translate provider-specific events into a small internal vocabulary: `p
 - `createOrder` returns a link to `/dev/mock-checkout/<intentId>`. That page states that it is a test and that no money moves. It offers "Simulate success" and "Simulate failure" buttons.
 - Those buttons **don't** mark anything as paid. They build a webhook payload, sign it with HMAC-SHA256 using `MOCK_WEBHOOK_SECRET`, and POST it to `/api/webhooks/mock`. The intent becomes `succeeded` only by going through the same verification, deduplication and processing path a real provider would use. There is no other way.
 - The mock checkout route returns 404 unless the mode is mock.
+
+### Razorpay (chosen provider, Milestone 10)
+
+The founder chose Razorpay on 2026-11-07. The intended product is **Razorpay Route**: each creator becomes a _linked account_ that Razorpay KYCs, and each order carries a transfer of the creator's share to that account. Razorpay settles directly to the creator and the platform keeps only the commission, so Coffea et Thea never holds funds (PRD D3).
+
+Planned mapping, to be **re-verified against Razorpay's current docs before writing the adapter**:
+
+| Internal                             | Razorpay                                                                                                                                |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `createOrder`                        | Orders API with a `transfers` entry for the creator's linked account (amount = `creator_share_paise`)                                   |
+| checkout                             | Razorpay Checkout on the client. The browser's payment signature is a hint only; state changes come from the webhook.                   |
+| `verifyWebhook`                      | HMAC-SHA256 of the raw body with the webhook secret, compared to `X-Razorpay-Signature`. The event id header is used for deduplication. |
+| `payment.captured`, `payment.failed` | `payment.captured`, `payment.failed`                                                                                                    |
+| `refund.processed`                   | `refund.processed`, with transfer reversal for the creator's share                                                                      |
+| settlements                          | `transfer.*` and settlement webhooks or reports → `settlements`                                                                         |
+
+The adapter lives at `src/modules/payments/providers/razorpay.ts`, behind `PAYMENTS_MODE=live` and `LIVE_PAYMENTS_APPROVED=true`, and is tested only against Razorpay test mode.
 
 ## 3. Commission engine
 

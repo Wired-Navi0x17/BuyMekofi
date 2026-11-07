@@ -152,10 +152,10 @@ export function BurnIntro({ children }: { children: ReactNode }) {
             className="relative mx-auto grid min-h-[100dvh] max-w-6xl grid-rows-[1fr_auto] px-4 pb-8 md:px-8 md:pb-12"
           >
             <div className="flex items-center">
-              <Wordmark animated className="w-[min(88vw,46rem)] text-ink md:-ml-4" />
+              <Wordmark animated className="w-[min(92vw,64rem)] text-ink md:-ml-4" />
             </div>
             <div className="flex items-center justify-between gap-6">
-              <p className="ink-after max-w-[28ch] text-sm text-ink-soft [--ink-after-delay:4.2s]">
+              <p className="ink-after max-w-[28ch] text-sm text-ink-soft [--ink-after-delay:2.4s]">
                 Scroll to open the page.
               </p>
               <button
