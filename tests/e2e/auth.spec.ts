@@ -23,11 +23,25 @@ test("login rejects a wrong password without saying which part was wrong", async
   ).toBeVisible();
 });
 
-test("register validates email and password length on the server", async ({ page }) => {
+test("register asks for a username first, then account details", async ({ page }) => {
   await page.goto("/register");
+  await expect(page.getByText("Choose a username for your page.")).toBeVisible();
+  await page.getByLabel("Username").fill("admin");
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page.getByText("That name is reserved. Try another.")).toBeVisible();
+  const name = `e2e_${Date.now().toString(36)}`;
+  await page.getByLabel("Username").fill(name);
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page.getByText(`coffeaetthea.in/${name}`)).toBeVisible();
+  await page.getByRole("button", { name: "Change" }).click();
+  await expect(page.getByLabel("Username")).toBeVisible();
+});
+
+test("register validates email and password length on the server", async ({ page }) => {
+  await page.goto(`/register?username=e2e_${Date.now().toString(36)}`);
   await page.getByLabel("Email").fill("not-an-email");
   await page.getByLabel("Password", { exact: true }).fill("short");
-  await page.getByRole("button", { name: "Create account" }).click();
+  await page.getByRole("button", { name: "Sign up" }).click();
   await expect(page.getByText("Enter a valid email address.")).toBeVisible();
   await expect(page.getByText("Use at least 10 characters.")).toBeVisible();
 });
@@ -63,12 +77,13 @@ test.describe("signed-in journey", () => {
     await page.getByLabel("Email").fill(user.email);
     await page.getByLabel("Password", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Log in" }).click();
-    await expect(page).toHaveURL(/\/dashboard$/);
-    await expect(page.getByText(`Signed in as ${user.email}`)).toBeVisible();
+    // No page yet, so the dashboard hands them to setup.
+    await expect(page).toHaveURL(/\/onboarding$/);
+    await expect(page.getByRole("heading", { name: "Set up your page" })).toBeVisible();
 
     // Signed-in users skip the guest-only pages.
     await page.goto("/login");
-    await expect(page).toHaveURL(/\/dashboard$/);
+    await expect(page).toHaveURL(/\/onboarding$/);
 
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/$/);

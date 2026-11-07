@@ -55,7 +55,7 @@ rate_limit_buckets
 | status                                | creator_status ('active','suspended')  | admins can suspend                                                                                                 |
 | created_at, updated_at                | timestamptz                            |                                                                                                                    |
 
-**`profile_links`**: `id`, `creator_id`, `platform` (enum: instagram, youtube, x, linkedin, github, behance, dribbble, spotify, website, other), `url` (https only, ≤ 2048), `label`, `position smallint`. Unique `(creator_id, position)`, deferrable so reordering works.
+**`profile_links`** (built, Milestone 3; the URL must be https, and the check is applied in the database): `id`, `creator_id`, `platform` (enum: instagram, youtube, x, linkedin, github, behance, dribbble, spotify, website, other), `url` (https only, ≤ 2048), `label`, `position smallint`. Unique `(creator_id, position)`, deferrable so reordering works.
 
 **`portfolio_projects`**: `id`, `creator_id`, `title` (≤ 120), `description` (≤ 2000), `url`, `image_path`, `is_featured`, `position`, `published`. Partial index on `(creator_id) where is_featured`.
 
@@ -189,3 +189,10 @@ Admin writes go through Server Actions that check `has_role('admin')` and then u
 ## Storage
 
 The `avatars`, `covers` and `portfolio` buckets are public-read with `file_size_limit` set (2 MB for avatars, 5 MB for the others) and `allowed_mime_types` limited to jpeg, png and webp. Object paths are `<user_id>/<uuid>.<ext>`. The insert, update and delete policy checks `(storage.foldername(name))[1] = auth.uid()::text`.
+
+## As built (Milestone 3)
+
+- **`page_documents`:** `creator_id` PK, `schema_version`, `draft jsonb`, `published jsonb`, `published_at`, and a 200 KB size cap per document. Clients have INSERT and UPDATE on (`draft`, `schema_version`) only.
+- **`page_versions`:** append-only snapshots written at publish time by the service role.
+- **Storage `avatars` (2 MB) and `covers` (5 MB):** JPEG, PNG and WebP only. Writes need `(storage.foldername(name))[1] = auth.uid()`.
+- **`username_availability(text)`:** a `security definer` function that returns `available`, `taken`, `reserved` or `invalid`. It's executable by anon, for the claim box.

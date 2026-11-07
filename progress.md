@@ -104,6 +104,44 @@ Verification: lint and typecheck pass, there are 70 unit tests, and 33 e2e tests
 - **Supabase:** auth settings were pushed with `supabase config push` after a reviewed diff; `config.toml` was first aligned with the remote so nothing else changed. Changes: redirect URLs for `localhost:3000/**` and `localhost:3100/**`, minimum password length 10, and secure password change. The remote now has zero differences from `config.toml`.
 - **Trademark (PRD D1):** "Coffea" is an existing Indian café chain. See the PRD. The official IP India search needs the founder's own OTP login.
 
-## Next: Milestone 3 (onboarding and public profile)
+## Monochrome palette (2026-11-07) ✅
 
-Username claim with live availability, profile basics, avatar upload (Storage bucket and policies), the `page_documents` model with a shared renderer, and the public `/[username]` page. Then Page Studio v1 (Milestone 4) and Admin + Site CMS (Milestone 5).
+The palette is strictly monochrome, based on early manga: letterpress black on yellowed newsprint, with no accent colour (DESIGN.md §2). The burn intro chars to neutral black with an ash-white edge.
+
+## Milestone 3: onboarding and public creator page ✅
+
+The sign-up flow is modelled on the founder's Buy Me a Coffee reference: one focused question per screen.
+
+1. `/register` step 1: "Choose a username for your page", with a live availability check. Step 2: email and password. "Change" goes back to step 1. Arriving from the landing Claim box skips straight to step 2.
+2. After confirming their email, or logging in, a creator with no page goes straight to `/onboarding`.
+3. `/onboarding` is one screen: photo, name, page address (prefilled from sign-up), bio and up to 8 links, then **Publish my page**. The same screen is used later as "Edit your page".
+4. Publishing lands on the live page at `/{username}`. The dashboard shows "Your page is live", with View and Edit buttons.
+
+Built:
+
+- Migrations `20261107160000` and `20261107161000`, applied:
+  - `profile_links` (https-only at the database);
+  - `page_documents` (clients may edit the draft only; publishing is server-side);
+  - append-only `page_versions`;
+  - `avatars` and `covers` Storage buckets (size and type limits; writes only into the owner's own folder).
+- Page document schema v1 (`src/modules/pages/document.ts`). It always has exactly one support block, a block cap and unique block ids, and unknown fields are stripped.
+- Avatar upload goes through a Server Action. It's checked by magic bytes (JPEG, PNG and WebP only; SVG refused) and the 2 MB limit, and stored under `{uid}/{uuid}.ext`.
+- The public creator page is the Café template: cover band, avatar, name, Support, About, links ("Elsewhere"), and an honest support panel ("Contributions aren't open yet"). It is cached as ISR with `cacheTag(creator:{username})`, refreshed by `updateTag` on publish, and unknown names return a real 404.
+
+Verification:
+
+- `pnpm test`: 88 unit tests.
+- `pnpm test:integration`: 21 tests, covering links, documents, versions and Storage isolation.
+- `pnpm e2e`: 38 tests, covering the two-step register, the full login → setup → publish → public page → dashboard → edit journey, and 404s.
+- `pnpm build`: passes.
+
+Not done yet:
+
+- Cover-image upload UI (the bucket is ready; it comes with Page Studio).
+- Image resizing.
+- A Direct UPI field (it arrives with the support panel in Milestone 8).
+- Our own rate limit on the claim and username checks (Milestone 12).
+
+## Next: Milestone 4 (Page Studio v1)
+
+Theme editor (palette presets, up to 3 fonts, backgrounds, borders, image treatments), cover upload, more blocks (gallery, portfolio, quote), live preview, autosave and publish history.

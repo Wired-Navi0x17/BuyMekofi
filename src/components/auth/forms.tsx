@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Field, FormMessage } from "@/components/ui/field";
@@ -14,6 +14,7 @@ import {
 } from "@/modules/auth/actions";
 import { PASSWORD_MIN } from "@/modules/auth/schemas";
 import { normaliseUsername, validateUsernameFormat } from "@/modules/profiles/username";
+import { checkUsernameStep, type ClaimState } from "@/modules/profiles/actions";
 import { brand } from "@/config/brand";
 
 const idle: FormState = { status: "idle" };
@@ -82,9 +83,21 @@ export function LoginForm() {
 
 export function RegisterForm() {
   const [state, action, pending] = useActionState(signUp, idle);
+  const [nameState, nameAction, checking] = useActionState(checkUsernameStep, {} as ClaimState);
+  // When the person clicks "Change", the result they are changing becomes stale;
+  // only a newer check result may move them on again.
+  const [stale, setStale] = useState<ClaimState | null>(null);
   const params = useSearchParams();
-  const claimed = normaliseUsername(params.get("username") ?? "");
-  const claim = validateUsernameFormat(claimed);
+  const fromClaim = validateUsernameFormat(normaliseUsername(params.get("username") ?? ""));
+
+  // Step 2 once a name has been checked here, or arrived checked from the claim box.
+  const fresh = nameState !== stale;
+  const chosen =
+    fresh && nameState.ok && nameState.value
+      ? nameState.value
+      : stale === null && fromClaim.ok
+        ? fromClaim.username
+        : null;
 
   if (state.status === "sent") {
     return (
@@ -92,12 +105,12 @@ export function RegisterForm() {
         <Heading title="Check your email" />
         <FormMessage tone="notice">
           If <span className="font-medium">{state.email}</span> can be registered, we have sent a
-          confirmation link to it. Open it on this device to finish creating your account.
+          confirmation link to it. Open it on this device to finish setting up your page.
         </FormMessage>
         <p className="mt-6 text-sm text-ink-soft">
           Nothing after a few minutes? Check spam, or{" "}
           <Link href="/register" className={linkClass}>
-            try again
+            start again
           </Link>
           .
         </p>
@@ -105,23 +118,69 @@ export function RegisterForm() {
     );
   }
 
+  if (!chosen) {
+    return (
+      <>
+        <Heading title="Create your account" lead="Choose a username for your page." />
+        <form action={nameAction} noValidate>
+          <label htmlFor="register-username" className="sr-only">
+            Username
+          </label>
+          <div className="flex min-h-13 items-stretch border-2 border-ink bg-sheet focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
+            <span aria-hidden className="flex items-center pl-3 tabular text-ink-soft select-none">
+              {brand.domain}/
+            </span>
+            <input
+              id="register-username"
+              name="username"
+              defaultValue={nameState.value ?? (fromClaim.ok ? fromClaim.username : "")}
+              placeholder="yourname"
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
+              autoFocus
+              maxLength={40}
+              aria-invalid={fresh && nameState.error ? true : undefined}
+              aria-describedby={fresh && nameState.error ? "register-username-error" : undefined}
+              className="min-w-0 flex-1 bg-transparent py-3 pr-3 tabular focus:outline-none"
+            />
+          </div>
+          {fresh && nameState.error && (
+            <p id="register-username-error" role="alert" className="mt-2 text-sm font-medium">
+              {nameState.error}
+            </p>
+          )}
+          <Button type="submit" disabled={checking} className="mt-6 w-full">
+            {checking ? "Checking…" : "Next"}
+          </Button>
+        </form>
+        <p className="mt-8 text-sm text-ink-soft">
+          Already have an account?{" "}
+          <Link href="/login" className={linkClass}>
+            Log in
+          </Link>
+        </p>
+      </>
+    );
+  }
+
   return (
     <>
-      <Heading
-        title="Create your page"
-        lead="An account is free. You'll choose your username in the next step."
-      />
-      {claim.ok && (
-        <p className="mb-6 border-2 border-ink bg-sheet px-3 py-2.5 text-sm">
-          Claiming{" "}
-          <span className="font-medium tabular">
-            {brand.domain}/{claim.username}
-          </span>
-          . It becomes yours when you finish setting up.
-        </p>
-      )}
+      <Heading title="Create your account" lead="Now the login details for your page." />
+      <p className="mb-6 flex items-center justify-between gap-3 border-2 border-ink bg-sheet px-3 py-2.5 text-sm">
+        <span className="min-w-0 truncate font-medium tabular">
+          {brand.domain}/{chosen}
+        </span>
+        <button
+          type="button"
+          onClick={() => setStale(nameState)}
+          className={`${linkClass} shrink-0`}
+        >
+          Change
+        </button>
+      </p>
       <form action={action} className="grid gap-5" noValidate>
-        {claim.ok && <input type="hidden" name="username" value={claim.username} />}
+        <input type="hidden" name="username" value={chosen} />
         {state.message && <FormMessage tone="error">{state.message}</FormMessage>}
         <Field
           label="Email"
@@ -143,14 +202,11 @@ export function RegisterForm() {
           error={state.errors?.password}
         />
         <Button type="submit" disabled={pending} className="mt-1 w-full">
-          {pending ? "Creating account…" : "Create account"}
+          {pending ? "Creating account…" : "Sign up"}
         </Button>
       </form>
       <p className="mt-6 text-sm text-ink-soft">
-        Already have an account?{" "}
-        <Link href="/login" className={linkClass}>
-          Log in
-        </Link>
+        The username becomes yours when you finish setting up your page.
       </p>
     </>
   );

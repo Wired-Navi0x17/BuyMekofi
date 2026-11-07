@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Wordmark } from "@/components/marketing/wordmark";
-import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
+import { Button, ButtonLink } from "@/components/ui/button";
+import { brand } from "@/config/brand";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { signOut } from "@/modules/auth/actions";
 import { requireUser } from "@/modules/auth/session";
 
@@ -31,17 +34,31 @@ export default function DashboardPage() {
 
 async function Account() {
   const user = await requireUser("/dashboard");
+  const supabase = await createSupabaseServerClient();
+  const { data: profile } = await supabase
+    .from("creator_profiles")
+    .select("username, onboarding_completed_at")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!profile?.onboarding_completed_at) redirect("/onboarding");
+
   return (
     <section aria-labelledby="dash-title" className="max-w-xl">
       <h1 id="dash-title" className="text-[1.75rem] font-medium tracking-tight">
-        Your account is ready.
+        Your page is live.
       </h1>
-      <p className="mt-2 text-ink-soft">
-        Signed in as <span className="text-ink">{user.email}</span>.
+      <p className="mt-2 text-lg tabular">
+        {brand.domain}/{profile.username}
       </p>
-      <p className="mt-6 border-t border-rule pt-6 text-ink-soft">
-        Choosing your username and building your page come next. That part of the product is being
-        built now and will appear here when it works.
+      <div className="mt-6 flex flex-wrap gap-3">
+        <ButtonLink href={`/${profile.username}`}>View your page</ButtonLink>
+        <ButtonLink href="/onboarding" variant="secondary">
+          Edit your page
+        </ButtonLink>
+      </div>
+      <p className="mt-8 border-t-2 border-ink pt-6 text-ink-soft">
+        Signed in as <span className="text-ink">{user.email}</span>. Earnings, supporters and the
+        page designer arrive here as they are built.
       </p>
     </section>
   );

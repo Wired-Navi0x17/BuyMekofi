@@ -9,6 +9,7 @@ import {
   fieldErrors,
   newPasswordSchema,
   safeNextPath,
+  DEFAULT_AFTER_LOGIN,
   type FieldErrors,
 } from "./schemas";
 import { normaliseUsername, validateUsernameFormat } from "@/modules/profiles/username";
@@ -100,11 +101,21 @@ export async function signIn(_prev: FormState, form: FormData): Promise<FormStat
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
     return { status: "error", message: authErrorMessage(error.code), email: parsed.data.email };
   }
-  redirect(safeNextPath(str(form, "next")));
+  // Creators without a page go straight to setup instead of bouncing via the dashboard.
+  const next = safeNextPath(str(form, "next"));
+  if (next === DEFAULT_AFTER_LOGIN) {
+    const { data: profile } = await supabase
+      .from("creator_profiles")
+      .select("onboarding_completed_at")
+      .eq("user_id", data.user.id)
+      .maybeSingle();
+    if (!profile?.onboarding_completed_at) redirect("/onboarding");
+  }
+  redirect(next);
 }
 
 export async function signOut(): Promise<void> {

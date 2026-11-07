@@ -1,8 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
+  experimental: {
+    // Avatar uploads go through a Server Action: 2 MB image + multipart overhead.
+    serverActions: { bodySizeLimit: "2200kb" },
+  },
   partialPrefetching: true,
   turbopack: {
     rules: {

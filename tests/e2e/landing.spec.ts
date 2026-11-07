@@ -120,6 +120,6 @@ test.describe("landing content", () => {
 
   test("header links reach the real auth pages", async ({ page }) => {
     await page.goto("/register");
-    await expect(page.getByRole("heading", { name: "Create your page" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
   });
 });

@@ -3,7 +3,12 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export type SessionUser = { id: string; email: string | null };
+export type SessionUser = {
+  id: string;
+  email: string | null;
+  /** Prefill only (user-editable metadata); never used for authorisation. */
+  pendingUsername: string | null;
+};
 
 /**
  * Data Access Layer entry point for "who is this?". Verifies the JWT
@@ -18,7 +23,9 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.claims?.sub) return null;
   const email = typeof data.claims.email === "string" ? data.claims.email : null;
-  return { id: data.claims.sub, email };
+  const meta = (data.claims.user_metadata ?? {}) as Record<string, unknown>;
+  const pendingUsername = typeof meta.pending_username === "string" ? meta.pending_username : null;
+  return { id: data.claims.sub, email, pendingUsername };
 }
 
 /** For protected pages and actions. Redirects to login with a return path. */
