@@ -49,7 +49,13 @@ export function safeNextPath(input: string | null | undefined): string {
   try {
     const url = new URL(input, "http://local.invalid");
     if (url.origin !== "http://local.invalid") return DEFAULT_AFTER_LOGIN;
-    return url.pathname + url.search;
+    // Validate the normalised output too: "/.//evil.example" normalises to
+    // "//evil.example", a protocol-relative URL to another host.
+    const out = url.pathname + url.search;
+    if (!out.startsWith("/") || out.startsWith("//") || out.includes("\\")) {
+      return DEFAULT_AFTER_LOGIN;
+    }
+    return out;
   } catch {
     return DEFAULT_AFTER_LOGIN;
   }

@@ -49,6 +49,9 @@ describe("safeNextPath", () => {
     null,
     undefined,
     "/%2F%2Fevil.example",
+    "/.//evil.example",
+    "/..//evil.example",
+    "/a/../..//evil.example",
   ])("falls back for unsafe %j", (input) => {
     expect(safeNextPath(input)).toBe("/dashboard");
   });
