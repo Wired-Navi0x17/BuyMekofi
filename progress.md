@@ -30,7 +30,39 @@ Known limitations:
 - Pricing copy reads `src/config/launch-terms.ts` until Milestone 4 moves it to the database.
 - The intro's frame rate on low-end Android has not been measured on a real device.
 
-## Next: Milestone 2 (public site and auth)
+## Rename and provider choice (2026-11-07)
 
-Blocked on: `.env.local` with `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_SECRET_KEY` for the dev project, and running `npx supabase login` and `npx supabase link --project-ref cgfrpgivgbqxmrhabbfx` (interactive, so the founder runs them).
-Plan: install `@supabase/supabase-js` and `@supabase/ssr`; write the first migration (`user_roles`, `creator_profiles`, `reserved_usernames`, `audit_logs` and RLS); add `proxy.ts` session refresh; build the register, login, recovery and verify flows.
+The product is now **Coffea et Thea**, and the wordmark was redrawn with the same pen technique. **Razorpay (Route)** is the chosen provider; see PAYMENT_MODEL.md. Nothing is live.
+
+## Milestone 2: public site and auth ✅
+
+Done and verified:
+
+- Migration `20261107120000_identity_profiles_audit.sql` is applied to the dev project. It adds `user_roles` with `has_role()`, `reserved_usernames`, `creator_profiles` (column-level grants mean clients can't publish themselves or change their status), and an append-only `audit_logs`. RLS is enabled on every table.
+- Supabase SSR clients: the user client, a service-role client behind `server-only`, and `src/proxy.ts`, which refreshes the session with `getClaims()` and does optimistic redirects.
+- Auth: register, log in, log out, forgot password, reset password, and an email-link callback. The `next` path is restricted to the same origin, and the site URL comes from `NEXT_PUBLIC_SITE_URL`, never from the Host header. Responses don't reveal whether an account exists.
+- `/dashboard` is protected, with the user section in Suspense (Cache Components).
+
+Verification:
+
+- `pnpm test`: 52 unit tests.
+- `pnpm test:integration`: 11 RLS tests against the dev database, using throwaway users created with the admin API and then deleted.
+- `pnpm e2e`: 26 tests (desktop and mobile), covering the protected redirect, wrong password, server-side validation, the forgot-password response, the bad callback link, and log in → dashboard → log out.
+- `pnpm build`: passes.
+
+**Founder actions in the Supabase dashboard (Milestone 2 can't be fully tested without them):**
+
+1. Authentication → URL Configuration: set Site URL to `http://localhost:3000`, and add redirect URLs `http://localhost:3000/**` and `http://localhost:3100/**`.
+2. Authentication → Providers → Email: keep "Confirm email" on, and set the minimum password length to 10.
+3. Authentication → Emails → SMTP: the built-in sender only delivers to your project team's addresses and allows about 2 emails per hour. Real sign-ups need custom SMTP, for example Resend or Amazon SES with a verified domain.
+4. Rotate the secret key that was pasted in chat, then update `.env.local`.
+
+Not done yet:
+
+- Our own rate limiting on auth forms. Supabase Auth's built-in limits apply for now, and ours comes in Milestone 9.
+- Audit rows for auth events. Supabase keeps its own auth audit log, and app-level audit starts with vouchers in Milestone 4.
+- Confirmation-email links are PKCE links, so they must be opened in the same browser that registered.
+
+## Next: Milestone 3 (onboarding and public profile)
+
+Username claim with live availability, display name, bio, avatar upload (Storage bucket and policies), social links, portfolio projects, publish, and the public `/[username]` page.

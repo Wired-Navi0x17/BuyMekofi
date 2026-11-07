@@ -17,6 +17,8 @@ Coffea et Thea is a creator page and support platform for India, built as a Next
 - `pnpm dev`. Use port 3100 for e2e.
 - `pnpm lint && pnpm typecheck && pnpm test && pnpm build`. All four must be green before a commit.
 - `pnpm e2e`. On NixOS, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE=$(which google-chrome)`, because Playwright's bundled browsers don't run there.
+- `pnpm test:integration`: RLS tests against the linked dev Supabase project (needs `.env.local`).
+- `npx supabase db push --remote`: apply migrations to the dev project (dry-run first with `--dry-run`).
 - `pnpm format`.
 
 ## Hard rules

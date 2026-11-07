@@ -1,4 +1,7 @@
+import { existsSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
+
+if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 // NixOS and some CI images cannot run Playwright's downloaded browsers;
@@ -15,6 +18,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
+  // Auth round-trips go to the hosted Supabase project; allow for network latency.
+  expect: { timeout: 10_000 },
   use: { baseURL: `http://localhost:${PORT}`, trace: "on-first-retry" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], launchOptions } },
@@ -24,6 +29,8 @@ export default defineConfig({
     command: `pnpm dev --port ${PORT}`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
+    // Auth email links and redirects use the canonical site URL; point it at the test server.
+    env: { NEXT_PUBLIC_SITE_URL: `http://localhost:${PORT}` },
     timeout: 120_000,
   },
 });

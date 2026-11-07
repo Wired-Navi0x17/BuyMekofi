@@ -57,8 +57,8 @@ test.describe("landing content", () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 
-  test("auth links lead to an honest not-open page", async ({ page }) => {
+  test("header links reach the real auth pages", async ({ page }) => {
     await page.goto("/register");
-    await expect(page.getByText("Accounts are not open yet.")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Create your page" })).toBeVisible();
   });
 });

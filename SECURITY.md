@@ -12,7 +12,7 @@ This document lists the threats the platform has to handle and the control for e
 ## 2. Authentication and sessions
 
 - Supabase Auth with cookie sessions through `@supabase/ssr`. `proxy.ts` refreshes the session on every request.
-- **Authorisation never trusts `getSession()`.** Server code calls `supabase.auth.getUser()` (or `getClaims()`), which validates the JWT, before any privileged read or write.
+- **Authorisation never trusts `getSession()`.** Server code calls `supabase.auth.getClaims()` (`src/modules/auth/session.ts`), which validates the JWT, before any privileged read or write.
 - Every protected page or action checks the session again on the server. The redirect in `proxy.ts` only makes the experience smoother and is not a security control.
 - Email verification is required before publishing a page or claiming a voucher.
 - Password recovery goes through Supabase's emailed link. The callback route only accepts redirects to same-origin paths, so it cannot be used as an open redirect.
