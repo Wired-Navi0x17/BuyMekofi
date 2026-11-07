@@ -12,7 +12,7 @@ type FieldProps = Omit<ComponentProps<"input">, "id"> & {
 };
 
 const inputClass =
-  "block w-full min-h-11 border border-rule bg-sheet px-3 text-base text-ink placeholder:text-ink-faint transition-colors duration-150 hover:border-rule-strong focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-cherry aria-[invalid=true]:border-brick";
+  "block w-full min-h-11 border border-rule bg-sheet px-3 text-base text-ink placeholder:text-ink-faint transition-colors duration-150 hover:border-rule-strong focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-ink aria-[invalid=true]:border-ink";
 
 /** Label above, hint under the label, error below the input (DESIGN.md §4). */
 export function Field({
@@ -62,7 +62,7 @@ export function Field({
         {...rest}
       />
       {error && (
-        <p id={errorId} className="flex items-start gap-1.5 text-sm text-brick">
+        <p id={errorId} className="flex items-start gap-1.5 text-sm font-medium text-ink">
           <WarningCircle aria-hidden size={16} className="mt-0.5 shrink-0" />
           {error}
         </p>
@@ -77,7 +77,7 @@ export function FormMessage({ tone, children }: { tone: "error" | "notice"; chil
   return (
     <p
       role={tone === "error" ? "alert" : "status"}
-      className={`flex items-start gap-2 border-2 px-3 py-2.5 text-sm ${tone === "error" ? "border-brick text-brick" : "border-ink text-ink"}`}
+      className={`flex items-start gap-2 border-2 px-3 py-2.5 text-sm ${tone === "error" ? "border-dashed border-ink font-medium text-ink" : "border-ink text-ink"}`}
     >
       <Icon aria-hidden size={16} className="mt-0.5 shrink-0" />
       <span>{children}</span>

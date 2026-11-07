@@ -20,32 +20,21 @@ Paper and ink. The site reads like a well-made notebook: warm off-white paper, c
 - **Why it belongs to this business:** a creator page is the creator's own signature. The ink stroke is the act of signing, and the burn is the paper giving way to the creator's world.
 - **Where it recurs:** the same ink-stroke draw marks confirmed moments: a voucher being claimed (the expiry date is underlined in ink), a page being published (the `@username` is underlined), and a test-mode contribution being recorded. Ink appears only when something is real and saved, never as decoration.
 
-## 2. Palette and roles (one accent; neutrals all warm, never mixed with cool)
+## 2. Palette and roles: strictly monochrome (founder, 2026-11-07)
 
-| Token         | Hex     | Role                                                                                                                    |
-| ------------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `paper`       | #F4F0E6 | page background                                                                                                         |
-| `sheet`       | #FBF8F1 | raised surfaces: the intro sheet, inputs, table header                                                                  |
-| `ink`         | #23201D | primary text, primary button fill, wordmark                                                                             |
-| `ink-soft`    | #5C5750 | secondary text (7.0:1 on paper)                                                                                         |
-| `ink-faint`   | #8A847A | metadata, placeholders (non-essential text only)                                                                        |
-| `rule`        | #D8D1C3 | hairlines, input borders                                                                                                |
-| `rule-strong` | #B9B0A0 | hover borders, table header rule                                                                                        |
-| `cherry`      | #8E2C3A | **the only accent**: links, focus ring, ink-stroke confirmations. HSL 351° 52% 37%. Named after the ripe coffee cherry. |
-| `leaf`        | #3F6B3A | success text and icons                                                                                                  |
-| `turmeric`    | #8A5D00 | warnings, TEST MODE label                                                                                               |
-| `brick`       | #B3261E | errors (always shown with an icon and text, never colour alone)                                                         |
+This follows the earliest manga print: black letterpress ink on cheap, yellowed postwar newsprint (the akahon era). It has **no accent colour, no red and no orange.** Emphasis comes from solid black, outline lettering, hatching and tone. States are told apart by icon, wording and line style (solid or dashed), never by hue.
 
-There is no dark theme at launch. A dark "night ink" theme is a later decision, and the tokens are set up so it can be added.
+| Token         | Hex     | Role                                                        |
+| ------------- | ------- | ----------------------------------------------------------- |
+| `paper`       | #EDE6D6 | page background: yellowed newsprint                         |
+| `sheet`       | #F6F1E4 | panels, inputs, the intro sheet                             |
+| `ink`         | #1D1B18 | letterpress black: text, borders, solid buttons, focus ring |
+| `ink-soft`    | #4A4640 | secondary text (≥ 7:1 on paper)                             |
+| `ink-faint`   | #7E786E | metadata and placeholders only                              |
+| `rule`        | #C9C0AE | hairlines                                                   |
+| `rule-strong` | #A69C88 | input hover, secondary borders                              |
 
-## 3. Typography
-
-- **Display (marketing headings only):** `Dela Gothic One`, a heavy Japanese poster gothic used for headings and panel SFX. No italics; hierarchy comes from size and the shu colour.
-- **UI and body:** `Geist`. Body is 1rem (16px), with `leading-relaxed` and a maximum line length of 65ch.
-- **Numbers:** `Geist` with `tabular-nums` and a slashed zero for every amount, rate, table date and id. Rupee amounts are written `₹1,250.00`, using Indian digit grouping (`en-IN`).
-- **Wordmark:** outlines of Mr Dafoe (SIL OFL) converted to SVG paths. The font file is not shipped.
-- **Limit: three typefaces on the platform UI:** Geist, Dela Gothic One, and the Mr Dafoe wordmark, which ships as SVG artwork rather than a loaded font. Creator pages have their own cap of 3 typefaces (PAGE_STUDIO.md).
-- **Banned:** Inter, a system-ui fallback used as the brand face, and serif in app UI.
+The burn intro chars to neutral black, and its edge smoulders ash-white rather than orange.
 
 ## 2b. Manga materials
 

@@ -1,7 +1,7 @@
 /**
  * Burning-paper shader. Adapted from Ksenia Kondrashova's CodePen demo
  * (MIT, see CREDITS.md). Changes: paper tinted to the `sheet` token,
- * premultiplied-alpha output,
+ * premultiplied-alpha output, monochrome ash edge instead of orange fire,
  * WebGL setup returns a disposable handle instead of using globals.
  */
 
@@ -45,15 +45,17 @@ void main() {
   uv.y *= min(1., u_resolution.y / u_resolution.x);
 
   float t = u_progress;
-  // sheet token #FBF8F1
-  vec3 color = vec3(.984, .973, .945);
+  // sheet token #F6F1E4 (newsprint)
+  vec3 color = vec3(.965, .945, .894);
 
   float main_noise = 1. - fbm(.75 * uv + 10. - vec2(.3, .9 * t));
 
   float paper_darkness = smoothstep(main_noise - .1, main_noise, t);
-  color -= vec3(.99, .95, .99) * paper_darkness;
+  // Char towards neutral ink black (subtracting the paper itself avoids a colour cast).
+  color -= vec3(.965, .945, .894) * paper_darkness * .97;
 
-  vec3 fire_color = fbm(6. * uv - vec2(0., .005 * u_time)) * vec3(6., 1.4, .0);
+  // Monochrome: an ash-white smoulder instead of orange flame (founder, no orange).
+  vec3 fire_color = fbm(6. * uv - vec2(0., .005 * u_time)) * vec3(2.6);
   float show_fire = smoothstep(.4, .9, fbm(10. * uv + 2. - vec2(0., .005 * u_time)));
   show_fire += smoothstep(.7, .8, fbm(.5 * uv + 5. - vec2(0., .001 * u_time)));
 

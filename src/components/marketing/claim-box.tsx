@@ -18,7 +18,7 @@ export function ClaimBox() {
       <label htmlFor={id} className="sr-only">
         Choose your page address
       </label>
-      <div className="flex min-h-14 items-stretch panel press-shadow focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-cherry">
+      <div className="flex min-h-14 items-stretch panel press-shadow focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
         <span
           aria-hidden
           className="flex items-center pr-0.5 pl-4 tabular text-ink-soft select-none"
@@ -41,13 +41,13 @@ export function ClaimBox() {
         <button
           type="submit"
           disabled={pending}
-          className="border-l-2 border-ink bg-cherry px-5 font-medium text-sheet transition-colors hover:bg-ink disabled:opacity-60 sm:px-7"
+          className="border-l-2 border-ink bg-ink px-5 font-medium text-sheet transition-colors hover:bg-ink disabled:opacity-60 sm:px-7"
         >
           {pending ? "Checking…" : "Claim"}
         </button>
       </div>
       {state.error && (
-        <p id={errorId} role="alert" className="mt-3 flex items-start gap-1.5 text-sm text-brick">
+        <p id={errorId} role="alert" className="mt-3 flex items-start gap-1.5 text-sm text-ink">
           <WarningCircle aria-hidden size={16} className="mt-0.5 shrink-0" />
           {state.error}
         </p>

@@ -17,7 +17,7 @@ import { normaliseUsername, validateUsernameFormat } from "@/modules/profiles/us
 import { brand } from "@/config/brand";
 
 const idle: FormState = { status: "idle" };
-const linkClass = "text-ink underline decoration-1 underline-offset-4 hover:text-cherry";
+const linkClass = "text-ink underline decoration-1 underline-offset-4 hover:text-ink-soft";
 
 function Heading({ title, lead }: { title: string; lead?: string }) {
   return (

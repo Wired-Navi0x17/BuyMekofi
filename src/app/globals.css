@@ -2,18 +2,16 @@
 
 /* Design tokens: DESIGN.md §2–§4 is the source of truth. */
 @theme {
-  /* Comic manga on the original paper-and-ink palette: black-and-white
-     first, one cherry spot colour, no oranges (founder, 2026-11-07). */
-  --color-paper: #f4f0e6;
-  --color-sheet: #fbf8f1;
-  --color-ink: #23201d;
-  --color-ink-soft: #5c5750;
-  --color-ink-faint: #8a847a;
-  --color-rule: #d8d1c3;
-  --color-rule-strong: #b9b0a0;
-  --color-cherry: #8e2c3a;
-  --color-leaf: #3f6b3a;
-  --color-brick: #a3192f;
+  /* Earliest manga print: black letterpress ink on yellowed postwar
+     newsprint (akahon era). Strictly monochrome: no accent colour; emphasis
+     comes from solid black, outline lettering, hatching and tone. */
+  --color-paper: #ede6d6;
+  --color-sheet: #f6f1e4;
+  --color-ink: #1d1b18;
+  --color-ink-soft: #4a4640;
+  --color-ink-faint: #7e786e;
+  --color-rule: #c9c0ae;
+  --color-rule-strong: #a69c88;
 
   --font-sans: var(--font-geist), ui-sans-serif, sans-serif;
   --font-display: var(--font-dela-gothic), var(--font-geist), sans-serif;
@@ -51,11 +49,11 @@
     line-height: 1.6;
   }
   ::selection {
-    background: var(--color-cherry);
+    background: var(--color-ink);
     color: var(--color-sheet);
   }
   :focus-visible {
-    outline: 2px solid var(--color-cherry);
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
   /* Belt and braces: nothing in this product is rounded. */
