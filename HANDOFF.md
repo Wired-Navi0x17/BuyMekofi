@@ -30,12 +30,8 @@ Latest round (2026-11-08):
 
 ## Do these first in the new session
 
-1. **Finish the real sign-up check.** The account `l41n-pr0t0` exists and is confirmed (a scanner confirmed it); the founder knows the temporary password. Continue from login: onboarding, Studio, publish; then admin grant. Original brief: verify the full sign-up in a real Chrome window. The founder asked for this explicitly. Don't jump straight to `/register`: start on `/`, scroll the landing page like a visitor, use the Claim box (or "Create your page"), then complete register → confirm email → onboarding → Studio → publish.
-   - Username: **`l41n-pr0t0`**. Email: **harshulkala14@gmail.com**.
-   - Password: generate a strong one, show it to the founder once, and tell them to change it via **Forgot password**. That also tests the reset flow.
-   - The confirmation email must be clicked by the founder (the built-in Supabase sender allows about 2 emails an hour and only reaches team addresses).
-   - Use Playwright with `executablePath: /home/l41n-pr0t0/.nix-profile/bin/google-chrome` and `headless: false`. The display is Wayland (`DISPLAY=:0`). Report every rough edge you find.
-2. Then run **`pnpm admin:grant harshulkala14@gmail.com`** and check `/admin`.
+1. **Real-Chrome sign-up check: done 2026-11-08.** `l41n-pr0t0` registered, was confirmed (by a mail scanner; see progress.md), logged in, completed onboarding, and has a live page at `/l41n-pr0t0`. Studio and the dashboard load. The founder still changes the temporary password via Forgot password, which also tests the reset flow.
+2. Admin granted to harshulkala14@gmail.com; `/admin` loads. Dev console logs a "uncached data outside Suspense" error for `/admin` (not seen in the build); worth a look.
 3. **Leftover test accounts:** 19 `@example.test` users need `pnpm cleanup:test-users --yes`. The founder runs this; it was blocked from the agent session.
 4. **Start Milestone 6: vouchers.** See below.
 
