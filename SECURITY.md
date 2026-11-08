@@ -66,6 +66,12 @@ Abuse of the introductory offer is limited by the eligibility markers described 
 
 Clients cannot write `avatar_path` or `cover_path`; the column grants were revoked in migration `20261108090000`. The server records the path it generated in the user's own folder. A database check constraint requires the shape `<owner uuid>/<uuid>.(jpg|png|webp)`, and the renderer re-checks it (`isOwnImagePath`). This closes pointing an avatar at another user's file or another bucket via `../`.
 
+### Draft privacy (fixed 2026-11-08, from a security review)
+
+RLS filters rows, not columns. The public policy on a published `page_documents` row exposed its `draft` column through the Data API. Drafts now live in `page_drafts`, which only the owner can read or write (migration `20261108110000`). `page_documents` holds only the published document and is written only by server code. A regression test asserts that the public API never returns draft content.
+
+**Rule from now on:** never put private columns in a table that has a public row policy. Split them into an owner-only table instead.
+
 ## 8. Payments
 
 See PAYMENT_MODEL.md §6 and §7: signature verification on the raw body, constant-time compare, event deduplication, row-locked state transitions, amount matching, and server-resolved commission. The webhook processor is only reachable through the service role.

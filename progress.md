@@ -184,6 +184,10 @@ Not done yet (Studio v2, Milestone 10):
 
 Google Fonts are loaded from Google's CDN on creator pages, which sends visitors' IPs to Google. Self-hosting is a later privacy improvement.
 
+## Security follow-up 2 (2026-11-08) ✅
+
+Unpublished drafts were readable through the Supabase API once a page was published (row policy, unrestricted columns). Drafts moved to the owner-only `page_drafts` table, and `page_documents` is now public, server-written content only. A regression test was added. Verification: 24 integration and 39 e2e tests pass.
+
 ## Next: Milestone 5 (Admin foundation + Site CMS)
 
 `/admin` behind `has_role('admin')` (404 for everyone else): creator list and suspension; `site_content` with draft, publish and history for the landing hero, steps, FAQ, pricing notes and announcements; the landing page reads from the CMS; every admin write is audited.

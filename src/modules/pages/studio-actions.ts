@@ -38,7 +38,7 @@ export async function saveDraft(input: unknown): Promise<Result<{ savedAt: strin
   if (!v.ok) return v;
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
-    .from("page_documents")
+    .from("page_drafts")
     .update({ draft: v.doc, schema_version: v.doc.version })
     .eq("creator_id", user.id)
     .select("updated_at")
@@ -53,7 +53,7 @@ export async function publishPage(): Promise<Result<{ username: string }>> {
   const user = await requireUser("/dashboard/studio");
   const supabase = await createSupabaseServerClient();
   const [{ data: doc }, { data: profile }] = await Promise.all([
-    supabase.from("page_documents").select("draft").eq("creator_id", user.id).single(),
+    supabase.from("page_drafts").select("draft").eq("creator_id", user.id).single(),
     supabase.from("creator_profiles").select("username").eq("user_id", user.id).single(),
   ]);
   if (!doc || !profile) return { ok: false, error: "Finish setting up your page first." };
@@ -64,10 +64,12 @@ export async function publishPage(): Promise<Result<{ username: string }>> {
   const admin = createSupabaseAdminClient();
   const now = new Date().toISOString();
   const results = await Promise.all([
-    admin
-      .from("page_documents")
-      .update({ published: v.doc, published_at: now })
-      .eq("creator_id", user.id),
+    admin.from("page_documents").upsert({
+      creator_id: user.id,
+      schema_version: v.doc.version,
+      published: v.doc,
+      published_at: now,
+    }),
     admin.from("page_versions").insert({
       creator_id: user.id,
       schema_version: v.doc.version,

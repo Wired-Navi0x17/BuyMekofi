@@ -68,35 +68,55 @@ describe("profile_links", () => {
   });
 });
 
-describe("page_documents", () => {
-  it("owner creates a draft but cannot publish it directly", async () => {
+describe("page drafts and documents", () => {
+  it("owner saves a draft; nobody else can read or edit it", async () => {
     const created = await a.client
-      .from("page_documents")
-      .insert({ creator_id: a.id, schema_version: 1, draft: doc });
+      .from("page_drafts")
+      .insert({ creator_id: a.id, schema_version: 2, draft: doc });
     expect(created.error).toBeNull();
-    const publish = await a.client
-      .from("page_documents")
-      .update({ published: doc })
-      .eq("creator_id", a.id);
-    expect(publish.error?.code).toBe("42501");
-  });
-
-  it("another creator cannot read or edit the draft", async () => {
-    const read = await b.client.from("page_documents").select("draft").eq("creator_id", a.id);
-    expect(read.data).toEqual([]);
+    expect(
+      (await b.client.from("page_drafts").select("draft").eq("creator_id", a.id)).data,
+    ).toEqual([]);
+    expect(
+      (await anon().from("page_drafts").select("draft").eq("creator_id", a.id)).data ?? [],
+    ).toEqual([]);
     const { data } = await b.client
-      .from("page_documents")
+      .from("page_drafts")
       .update({ draft: { hijacked: true } })
       .eq("creator_id", a.id)
       .select();
     expect(data ?? []).toEqual([]);
   });
 
-  it("page_versions cannot be written by clients", async () => {
-    const { error } = await a.client
+  it("a published page never exposes its draft (security review 2026-11-08)", async () => {
+    await admin()
+      .from("creator_profiles")
+      .update({ published_at: new Date().toISOString() })
+      .eq("user_id", a.id);
+    await admin()
+      .from("page_documents")
+      .upsert({ creator_id: a.id, schema_version: 2, published: doc });
+    await a.client
+      .from("page_drafts")
+      .update({ draft: { ...doc, secret: "unpublished" } })
+      .eq("creator_id", a.id);
+    const pub = await anon().from("page_documents").select("*").eq("creator_id", a.id).single();
+    expect(pub.data).not.toBeNull();
+    expect(JSON.stringify(pub.data)).not.toContain("unpublished");
+    expect(Object.keys(pub.data ?? {})).not.toContain("draft");
+    const draftAsAnon = await anon().from("page_drafts").select("draft").eq("creator_id", a.id);
+    expect(draftAsAnon.data ?? []).toEqual([]);
+  });
+
+  it("clients cannot write the public document or versions", async () => {
+    const pub = await a.client
+      .from("page_documents")
+      .upsert({ creator_id: a.id, schema_version: 2, published: doc });
+    expect(pub.error?.code).toBe("42501");
+    const ver = await a.client
       .from("page_versions")
-      .insert({ creator_id: a.id, schema_version: 1, document: doc });
-    expect(error?.code).toBe("42501");
+      .insert({ creator_id: a.id, schema_version: 2, document: doc });
+    expect(ver.error?.code).toBe("42501");
   });
 });
 

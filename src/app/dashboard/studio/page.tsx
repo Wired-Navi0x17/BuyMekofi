@@ -32,7 +32,7 @@ async function StudioLoader() {
       .select("platform, url, label")
       .eq("creator_id", user.id)
       .order("position"),
-    supabase.from("page_documents").select("draft").eq("creator_id", user.id).maybeSingle(),
+    supabase.from("page_drafts").select("draft").eq("creator_id", user.id).maybeSingle(),
   ]);
   if (!profile?.onboarding_completed_at) redirect("/onboarding");
 

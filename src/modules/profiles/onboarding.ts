@@ -137,8 +137,9 @@ export async function completeOnboarding(
   }
 
   // Page document: create the Café default on first run.
+  // Drafts live in the owner-only page_drafts table (migration 20261108110000).
   const { data: doc } = await supabase
-    .from("page_documents")
+    .from("page_drafts")
     .select("draft")
     .eq("creator_id", user.id)
     .maybeSingle();
@@ -146,7 +147,7 @@ export async function completeOnboarding(
   if (!draft) {
     draft = defaultDocument();
     const { error } = await supabase
-      .from("page_documents")
+      .from("page_drafts")
       .insert({ creator_id: user.id, schema_version: draft.version, draft });
     if (error) return { errors: { form: "We couldn't create your page. Try again." } };
   }
@@ -156,7 +157,12 @@ export async function completeOnboarding(
   const admin = createSupabaseAdminClient();
   const now = new Date().toISOString();
   const results = await Promise.all([
-    admin.from("page_documents").update({ published, published_at: now }).eq("creator_id", user.id),
+    admin.from("page_documents").upsert({
+      creator_id: user.id,
+      schema_version: published.version,
+      published,
+      published_at: now,
+    }),
     admin.from("page_versions").insert({
       creator_id: user.id,
       schema_version: published.version,

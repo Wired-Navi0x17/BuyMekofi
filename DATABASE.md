@@ -201,3 +201,8 @@ The `avatars`, `covers` and `portfolio` buckets are public-read with `file_size_
 
 - **Storage `page-media`:** 5 MB; JPEG, PNG and WebP only; writes are restricted to the owner's folder. Holds gallery images. Cover images live in `covers`, and their path is stored in the document at `theme.coverPath`.
 - **Document schema v2:** defined in `src/modules/pages/document.ts`. `page_documents.schema_version` is set to 2 on save.
+
+## Drafts split out (2026-11-08)
+
+- **`page_drafts`:** `creator_id` PK, `schema_version`, `draft jsonb` (200 KB cap), `updated_at`. RLS lets only the owner select, insert or update; anon has no access.
+- **`page_documents`:** now public content only: `published` (not null), `published_at`, `schema_version`. Clients cannot write it; publishing upserts it with the service role.
