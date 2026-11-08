@@ -131,3 +131,26 @@ describe("avatar storage", () => {
     expect(error).not.toBeNull();
   });
 });
+
+describe("image paths", () => {
+  it("clients cannot write avatar or cover paths directly", async () => {
+    const avatar = await a.client
+      .from("creator_profiles")
+      .update({ avatar_path: `${b.id}/aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee.png` })
+      .eq("user_id", a.id);
+    expect(avatar.error?.code).toBe("42501");
+    const cover = await a.client
+      .from("creator_profiles")
+      .update({ cover_path: "../avatars/x.png" })
+      .eq("user_id", a.id);
+    expect(cover.error?.code).toBe("42501");
+  });
+
+  it("the database refuses badly shaped paths even from the service role", async () => {
+    const { error } = await admin()
+      .from("creator_profiles")
+      .update({ avatar_path: `${b.id}/aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee.png` })
+      .eq("user_id", a.id);
+    expect(error?.code).toBe("23514");
+  });
+});

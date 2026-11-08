@@ -9,6 +9,13 @@ import { getPublicPage } from "@/modules/profiles/public-page";
  * Components requires at least one param; "coffea" is a reserved name, so it
  * prerenders as a 404 and real pages are generated on demand.
  */
+/**
+ * Allowed to block (opt out of instant-navigation validation): creator pages
+ * are reached mostly by direct visits from shared links, are ISR-cached after
+ * the first render, and blocking is what gives unknown names a real 404.
+ */
+export const instant = false;
+
 export function generateStaticParams() {
   return [{ username: "coffea" }];
 }

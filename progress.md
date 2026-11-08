@@ -142,6 +142,13 @@ Not done yet:
 - A Direct UPI field (it arrives with the support panel in Milestone 8).
 - Our own rate limit on the claim and username checks (Milestone 12).
 
+## Security follow-up (2026-11-08) ✅
+
+- Fixed the image-path finding from the automated review: clients can no longer write `avatar_path` or `cover_path`, the database enforces the path shape, and the page renderer re-checks it. Added 2 integration tests and 9 unit cases.
+- `/[username]` sets `instant = false`, the documented opt-out for a segment allowed to block. It's needed so unknown names return a real 404, and it cleared the dev overlay's "Insight".
+
+Verification: 97 unit, 23 integration and 38 e2e tests pass.
+
 ## Next: Milestone 4 (Page Studio v1)
 
 Theme editor (palette presets, up to 3 fonts, backgrounds, borders, image treatments), cover upload, more blocks (gallery, portfolio, quote), live preview, autosave and publish history.

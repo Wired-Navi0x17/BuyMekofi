@@ -110,7 +110,13 @@ export async function completeOnboarding(
       .from("avatars")
       .upload(path, avatar.bytes, { contentType: avatar.mime, upsert: false });
     if (error) return { errors: { avatar: "We couldn't store that image. Try another." } };
-    await supabase.from("creator_profiles").update({ avatar_path: path }).eq("user_id", user.id);
+    // Clients cannot write image paths (migration 20261108090000); the server
+    // records the path it just generated inside the user's own folder.
+    const { error: pathError } = await createSupabaseAdminClient()
+      .from("creator_profiles")
+      .update({ avatar_path: path })
+      .eq("user_id", user.id);
+    if (pathError) return { errors: { avatar: "We couldn't save that image. Try again." } };
     if (existing?.avatar_path)
       await supabase.storage.from("avatars").remove([existing.avatar_path]);
   }

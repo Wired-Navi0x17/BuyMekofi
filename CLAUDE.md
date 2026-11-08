@@ -18,6 +18,7 @@ Coffea et Thea is a creator page and support platform for India, built as a Next
 - `pnpm dev`. Use port 3100 for e2e.
 - `pnpm lint && pnpm typecheck && pnpm test && pnpm build`. All four must be green before a commit.
 - `pnpm e2e`. If a `pnpm dev` is already running on port 3000, Next refuses a second dev server, so run with `E2E_PORT=3000`. On NixOS, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE=$(which google-chrome)`, because Playwright's bundled browsers don't run there.
+- e2e on a cold dev server can time out while Turbopack compiles every route under parallel load. Warm the routes first (curl `/`, `/login`, `/register`, `/onboarding`, `/dashboard`, `/some_name`) or use `--workers=6`. A dev server left over from a killed test run can hang; kill it before rerunning.
 - `pnpm test:integration`: RLS tests against the linked dev Supabase project (needs `.env.local`).
 - `npx supabase db push --remote`: apply migrations to the dev project (dry-run first with `--dry-run`).
 - `pnpm format`.
