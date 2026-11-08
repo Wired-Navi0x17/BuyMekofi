@@ -14,7 +14,7 @@ import {
   updatePassword,
   type FormState,
 } from "@/modules/auth/actions";
-import { PASSWORD_MIN, emailSchema } from "@/modules/auth/schemas";
+import { PASSWORD_MIN } from "@/modules/auth/schemas";
 import { normaliseUsername, validateUsernameFormat } from "@/modules/profiles/username";
 import { checkUsernameStep, type ClaimState } from "@/modules/profiles/actions";
 import { brand } from "@/config/brand";
@@ -301,10 +301,6 @@ export function ConfirmLinkForm() {
   const tokenHash = params.get("token_hash") ?? "";
   const type = params.get("type") ?? "";
   const recovery = type === "recovery";
-  // Display only, never trusted. Shown so that someone sent another person's
-  // link (which would sign them in as that person) can see it is not theirs.
-  const shownEmail = emailSchema.safeParse(params.get("email") ?? "");
-
   if (!tokenHash) {
     return (
       <>
@@ -329,12 +325,6 @@ export function ConfirmLinkForm() {
             : "Press the button to confirm this address and finish setting up your page."
         }
       />
-      {shownEmail.success && (
-        <p className="mb-6 border-2 border-ink bg-sheet px-3 py-2.5 text-sm">
-          This link is for <span className="font-medium">{shownEmail.data}</span>. You will be
-          signed in as that address. If it is not yours, close this page.
-        </p>
-      )}
       <form action={action} className="grid gap-5" noValidate>
         <input type="hidden" name="token_hash" value={tokenHash} />
         <input type="hidden" name="type" value={type} />
