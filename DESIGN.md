@@ -1,4 +1,4 @@
-# Design System: Coffea et Thea
+# Design System: Eme Coffea et Thea
 
 Every screen is built against this file. If a component needs something that isn't listed here, add it here first.
 
@@ -14,7 +14,7 @@ Paper and ink. The site reads like a well-made notebook: warm off-white paper, c
 
 ## 1b. Signature element (exactly one)
 
-**"Written in ink, burned into view."** On the first visit the wordmark _Coffea et Thea_ is written stroke by stroke in ink on a sheet of paper. When the visitor scrolls, the sheet burns away from its edges to reveal the site.
+**"Written in ink, burned into view."** On the first visit the wordmark _Eme Coffea et Thea_ is written stroke by stroke in ink on a sheet of paper. When the visitor scrolls, the sheet burns away from its edges to reveal the site.
 
 - **Layer:** motion and materiality.
 - **Why it belongs to this business:** a creator page is the creator's own signature. The ink stroke is the act of signing, and the burn is the paper giving way to the creator's world.
@@ -52,7 +52,7 @@ The burn intro chars to neutral black, and its edge smoulders ash-white rather t
 - **Surfaces:** no cards stacked on cards. Sections are separated by `border-t border-rule` and whitespace. A table is a ruled list.
 - **No tags.** No eyebrow labels or pills above headings, and no "New" chips. Status in tables is plain text in a semantic colour with an icon.
 - **Loading:** skeleton blocks with the real layout's dimensions, in `rule` at 40% with an opacity pulse. No spinners.
-- **Empty states:** they show what will appear and how to make it appear, for example "Your first supporter will appear here. Share coffeaetthea.in/riya to get started" with a copy-link button.
+- **Empty states:** they show what will appear and how to make it appear, for example "Your first supporter will appear here. Share emecoffeaetthea.in/riya to get started" with a copy-link button.
 - **Errors:** inline, next to their cause, in the form "What happened. What to do."
 - **Money rows:** amount right-aligned in mono. Commission is shown as its own line with the rate and where it came from ("0% · welcome voucher until 10 Jan 2027"). Nothing is hidden in a tooltip.
 

@@ -5,7 +5,7 @@ test.describe("landing intro", () => {
     await page.goto("/");
     const overlay = page.locator(".burn-overlay");
     await expect(overlay).toBeVisible();
-    await expect(overlay.getByRole("img", { name: "Coffea et Thea" })).toBeVisible();
+    await expect(overlay.getByRole("img", { name: "Eme Coffea et Thea" })).toBeVisible();
     await expect(overlay).toHaveAttribute("data-ready", "true");
     await page.getByRole("button", { name: "Skip intro" }).click();
     await expect(overlay).toHaveCount(0, { timeout: 5_000 });
@@ -28,7 +28,7 @@ test.describe("landing intro", () => {
     await expect(page.locator(".intro-spacer")).not.toHaveAttribute("data-intro", "pending");
     // The scroll runway is gone, so scrolling up reaches the header directly.
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-    await expect(page.getByRole("link", { name: "Coffea et Thea home" })).toBeInViewport();
+    await expect(page.getByRole("link", { name: "Eme Coffea et Thea home" })).toBeInViewport();
     await page.mouse.wheel(0, 600);
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
   });
@@ -102,7 +102,7 @@ test.describe("claim box", () => {
     await page.getByLabel("Choose your page address").fill(`@${name.toUpperCase()}`);
     await page.getByRole("button", { name: "Claim" }).click();
     await expect(page).toHaveURL(new RegExp(`/register\\?username=${name}$`));
-    await expect(page.getByText(`coffeaetthea.in/${name}`)).toBeVisible();
+    await expect(page.getByText(`emecoffeaetthea.in/${name}`)).toBeVisible();
   });
 });
 

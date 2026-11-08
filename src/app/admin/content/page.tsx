@@ -29,7 +29,7 @@ export default async function AdminContent() {
             <li key={key}>
               <Link
                 href={`/admin/content/${key}`}
-                className="block panel p-4 hover:bg-ink hover:text-sheet"
+                className="panel block p-4 hover:bg-ink hover:text-sheet"
               >
                 <span className="font-display text-lg">{contentLabels[key].title}</span>
                 <span className="mt-1 block text-sm opacity-80">{contentLabels[key].where}</span>

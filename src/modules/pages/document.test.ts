@@ -31,7 +31,7 @@ describe("page document v2", () => {
     };
     const up = parseDocument(v1);
     expect(up.version).toBe(2);
-    expect(up.theme.palette).toBe("newsprint");
+    expect(up.theme.palette).toBe("cafe_2d");
     expect(up.blocks.map((b) => b.id)).toEqual(["about", "support"]);
   });
 

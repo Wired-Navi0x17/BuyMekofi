@@ -19,8 +19,8 @@ Done and verified:
 - `Button` and `ButtonLink` primitives.
 - Environment validation (`src/lib/env/*`). Server secrets are behind `server-only`. Mock payments are refused in production, and live payments are refused without an approval flag.
 - Money and commission maths, written test-first: `src/lib/money.ts`, `src/modules/commission/calculate.ts`.
-- Signature element: the Coffea et Thea wordmark is written in ink (CSS only, glyphs from Mr Dafoe under the OFL), and a WebGL sheet burns away on scroll (GSAP ScrollTrigger). A Skip button burns the sheet automatically. The intro is skipped for reduced motion, for returning visitors (localStorage), without JS (`noscript`) and without WebGL.
-- Landing page: hero, how it works, the two payment routes, a pricing ledger with a worked example computed by the real commission function, and FAQ. It states plainly that Coffea et Thea is in development and payments are not open.
+- Signature element: the Eme Coffea et Thea wordmark is written in ink (CSS only, glyphs from Mr Dafoe under the OFL), and a WebGL sheet burns away on scroll (GSAP ScrollTrigger). A Skip button burns the sheet automatically. The intro is skipped for reduced motion, for returning visitors (localStorage), without JS (`noscript`) and without WebGL.
+- Landing page: hero, how it works, the two payment routes, a pricing ledger with a worked example computed by the real commission function, and FAQ. It states plainly that Eme Coffea et Thea is in development and payments are not open.
 - `/login` and `/register` say honestly that accounts aren't open yet, and collect nothing.
 
 Verification: `pnpm lint`, `typecheck`, `test` (32 unit tests) and `build` all pass. `pnpm e2e` passes 14 tests (desktop and Pixel 7), covering: the wordmark is written, Skip works, scrolling removes the sheet, returning visitors skip the intro, reduced motion, the pricing figures, and no horizontal scroll.
@@ -32,7 +32,7 @@ Known limitations:
 
 ## Rename and provider choice (2026-11-07)
 
-The product is now **Coffea et Thea**, and the wordmark was redrawn with the same pen technique. **Razorpay (Route)** is the chosen provider; see PAYMENT_MODEL.md. Nothing is live.
+The product is now **Eme Coffea et Thea**, and the wordmark was redrawn with the same pen technique. **Razorpay (Route)** is the chosen provider; see PAYMENT_MODEL.md. Nothing is live.
 
 ## Milestone 2: public site and auth ✅
 
@@ -90,7 +90,7 @@ Verification: lint, typecheck and unit tests pass, and 29 e2e tests pass (new: s
   - the payment routes are panels;
   - FAQ answers sit in narration boxes;
   - the hero example shows the Café default page (cover, avatar, Support, tabs, About, Gallery and the support panel).
-- **Claim box:** `coffeaetthea.in/[name] Claim`. Availability comes from the `username_availability()` SQL function (migration `20261107140000`, applied). A free name goes to `/register?username=` and is carried into sign-up metadata as a prefill only.
+- **Claim box:** `emecoffeaetthea.in/[name] Claim`. Availability comes from the `username_availability()` SQL function (migration `20261107140000`, applied). A free name goes to `/register?username=` and is carried into sign-up metadata as a prefill only.
 - **Intro:** plays on **every** landing visit, at the founder's request. It's skipped for reduced motion, for anchor arrivals (`/#faq`) and for `?nointro`.
 - **Header links:** now plain in-page anchors, so smooth scrolling also works when the visitor arrived with a query string.
 - **Plan:** PAGE_STUDIO.md §6 defines the default "Café" creator template from the founder's reference.
@@ -218,6 +218,17 @@ The intro didn't replay on refresh after a section link had been clicked (the `#
 - a reload always replays it from the top;
 - arriving from another page at a section link still skips it;
 - the skip check is repeated inside the effect, which fixes a hydration race that would strip the hash first.
+
+## Rename, 2-D café design, hyphenated usernames (2026-11-08) ✅
+
+- **Name:** now **Eme Coffea et Thea**. The handwritten wordmark was redrawn (21 pen strokes), and the domain placeholder is `emecoffeaetthea.in`. The GitHub repo was renamed to `Eme-CoffeaEtThea` and the git remote updated. New brand names are reserved as usernames.
+- **Design:** the Tokyo 2-D café look. White paper with neutral greys, and `panel` outlines drawn as wobbly pencil lines (SVG displacement filter on pseudo-elements, so text stays crisp) with a fainter second pass. Strictly monochrome. A "2D café" palette was added for creator pages and is the default for new pages.
+- **Usernames:** may contain `-` (for example `l41n-pr0t0`). `-` and `_` are equivalent for uniqueness (a unique index on the canonical form), which stops lookalike impersonation. Doubled separators are refused. The reserved list and the availability check use the same canonical form.
+- **Intro:** a late scroll reset after load fixes a reload of `/#faq` landing mid-page.
+
+Verification: 117 unit, 30 integration and 42 e2e tests pass.
+
+See **HANDOFF.md** for the next session.
 
 ## Next: Milestone 6 (vouchers)
 

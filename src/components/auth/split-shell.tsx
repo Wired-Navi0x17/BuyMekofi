@@ -26,7 +26,7 @@ export function SplitShell({ children, aside }: { children: ReactNode; aside?: R
           <p className="font-display text-2xl leading-tight">Welcome to {brand.name}.</p>
           <ol className="mt-6 grid max-w-sm gap-3">
             {panels.map((p, i) => (
-              <li key={p.sfx} className="relative overflow-hidden panel px-4 py-3">
+              <li key={p.sfx} className="panel relative overflow-hidden px-4 py-3">
                 <div
                   aria-hidden
                   className="pointer-events-none absolute inset-y-0 right-0 w-1/2 tone-light [mask-image:linear-gradient(to_left,black,transparent)] opacity-25"

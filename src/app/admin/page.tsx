@@ -41,7 +41,7 @@ export default async function AdminOverview() {
           <Link
             key={s.label}
             href={s.href}
-            className="block panel p-4 hover:bg-ink hover:text-sheet"
+            className="panel block p-4 hover:bg-ink hover:text-sheet"
           >
             <dt className="text-sm">{s.label}</dt>
             <dd className="mt-1 font-display text-3xl tabular">{s.value}</dd>

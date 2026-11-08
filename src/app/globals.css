@@ -2,16 +2,16 @@
 
 /* Design tokens: DESIGN.md §2–§4 is the source of truth. */
 @theme {
-  /* Earliest manga print: black letterpress ink on yellowed postwar
-     newsprint (akahon era). Strictly monochrome: no accent colour; emphasis
-     comes from solid black, outline lettering, hatching and tone. */
-  --color-paper: #ede6d6;
-  --color-sheet: #f6f1e4;
-  --color-ink: #1d1b18;
-  --color-ink-soft: #4a4640;
-  --color-ink-faint: #7e786e;
-  --color-rule: #c9c0ae;
-  --color-rule-strong: #a69c88;
+  /* 2-D café (Tokyo's "step into a manga" cafés): white surfaces drawn in
+     soft, uneven pencil-black outlines. Strictly monochrome; colour comes
+     only from creators' own images, which is what makes them pop. */
+  --color-paper: #f7f7f4;
+  --color-sheet: #fffefc;
+  --color-ink: #1b1b1a;
+  --color-ink-soft: #4a4a47;
+  --color-ink-faint: #7b7b76;
+  --color-rule: #d5d5d0;
+  --color-rule-strong: #a8a8a2;
 
   --font-sans: var(--font-geist), ui-sans-serif, sans-serif;
   --font-display: var(--font-dela-gothic), var(--font-geist), sans-serif;
@@ -165,9 +165,30 @@
 }
 
 /* An inked comic panel: heavy border, flat sheet. */
+/* A hand-drawn panel: the outline lives on pseudo-elements so the pencil
+   wobble (SVG filter #sketch, root layout) never blurs the text inside.
+   ::before is the main line; ::after a fainter second pass, slightly off. */
 @utility panel {
-  border: 3px solid var(--color-ink);
+  position: relative;
+  isolation: isolate;
   background-color: var(--color-sheet);
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  &::before {
+    border: 2.5px solid var(--color-ink);
+    filter: url(#sketch);
+  }
+  &::after {
+    border: 1px solid color-mix(in srgb, var(--color-ink) 45%, transparent);
+    transform: translate(2px, 1.5px);
+    filter: url(#sketch-light);
+  }
 }
 
 /* Hard offset shadow for the few things you press (CTAs, claim box). */

@@ -1,8 +1,8 @@
 @AGENTS.md
 
-# Coffea et Thea: working rules for agents
+# Eme Coffea et Thea: working rules for agents
 
-Coffea et Thea is a creator page and support platform for India, built as a Next.js 16 modular monolith on Supabase. Read these before changing anything:
+Eme Coffea et Thea is a creator page and support platform for India, built as a Next.js 16 modular monolith on Supabase. Start with `HANDOFF.md` (current state and next steps). Then read these before changing anything:
 
 - `PRD.md` for the product and its open decisions
 - `ARCHITECTURE.md` for the module layout

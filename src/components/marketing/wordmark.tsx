@@ -3,9 +3,10 @@ import { brand } from "@/config/brand";
 import { wordmark } from "./wordmark-data";
 
 /** Pen timing per stroke, in writing order (seconds). */
-// C o f f e | a, then e t (crossbar) | T-bar T-stem h-stem h-bowl e a
+// E-bar E-stem E-mid E-foot m e | C o f f e a | e t (crossbar) | T-bar T-stem h-stem h-bowl e a
 const STROKE_SECONDS = [
-  0.68, 0.42, 0.45, 0.45, 0.34, 0.42, 0.34, 0.34, 0.18, 0.3, 0.3, 0.26, 0.34, 0.34, 0.42,
+  0.3, 0.28, 0.16, 0.26, 0.5, 0.34, 0.6, 0.38, 0.4, 0.4, 0.3, 0.38, 0.3, 0.3, 0.16, 0.28, 0.28,
+  0.24, 0.3, 0.3, 0.38,
 ] as const;
 const START_DELAY = 0.35;
 const GAP = 0.05;

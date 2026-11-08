@@ -1,20 +1,20 @@
 # Payment model
 
-**Status: no live payments.** No provider has approved Coffea et Thea's marketplace model (PRD D2). Until one does, and the founder explicitly approves going live, only the mock provider exists. Mock records carry `livemode=false` and show a visible TEST MODE label everywhere they appear.
+**Status: no live payments.** No provider has approved Eme Coffea et Thea's marketplace model (PRD D2). Until one does, and the founder explicitly approves going live, only the mock provider exists. Mock records carry `livemode=false` and show a visible TEST MODE label everywhere they appear.
 
 ## 1. Two routes, kept separate
 
-|                                       | Direct UPI                            | Gateway                                                                  |
-| ------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------ |
-| Money path                            | supporter's bank → creator's bank     | supporter → provider → split → creator (and Coffea et Thea's commission) |
-| Coffea et Thea touches money          | never                                 | never; the provider settles to each party directly                       |
-| Coffea et Thea can verify it happened | **no**                                | yes, through a signed webhook                                            |
-| Commission                            | none (we can't deduct it)             | policy or voucher rate                                                   |
-| Recorded as a payment                 | no                                    | yes                                                                      |
-| Shown in public support activity      | no (PRD D8)                           | yes, subject to the supporter's anonymity choice                         |
-| Anonymous to the creator              | **no**: their UPI app shows the payer | optional, and still known to the provider and banks                      |
+|                                           | Direct UPI                            | Gateway                                                                      |
+| ----------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------- |
+| Money path                                | supporter's bank → creator's bank     | supporter → provider → split → creator (and Eme Coffea et Thea's commission) |
+| Eme Coffea et Thea touches money          | never                                 | never; the provider settles to each party directly                           |
+| Eme Coffea et Thea can verify it happened | **no**                                | yes, through a signed webhook                                                |
+| Commission                                | none (we can't deduct it)             | policy or voucher rate                                                       |
+| Recorded as a payment                     | no                                    | yes                                                                          |
+| Shown in public support activity          | no (PRD D8)                           | yes, subject to the supporter's anonymity choice                             |
+| Anonymous to the creator                  | **no**: their UPI app shows the payer | optional, and still known to the provider and banks                          |
 
-The interface presents these as two clearly different choices on the support panel. Direct UPI is labelled "Pay creator directly by UPI: no fee, your name is visible to them, not tracked on Coffea et Thea". It never looks like a lesser version of the gateway option.
+The interface presents these as two clearly different choices on the support panel. Direct UPI is labelled "Pay creator directly by UPI: no fee, your name is visible to them, not tracked on Eme Coffea et Thea". It never looks like a lesser version of the gateway option.
 
 ## 2. Provider abstraction
 
@@ -52,7 +52,7 @@ Adapters translate provider-specific events into a small internal vocabulary: `p
 
 ### Razorpay (chosen provider, Milestone 10)
 
-The founder chose Razorpay on 2026-11-07. The intended product is **Razorpay Route**: each creator becomes a _linked account_ that Razorpay KYCs, and each order carries a transfer of the creator's share to that account. Razorpay settles directly to the creator and the platform keeps only the commission, so Coffea et Thea never holds funds (PRD D3).
+The founder chose Razorpay on 2026-11-07. The intended product is **Razorpay Route**: each creator becomes a _linked account_ that Razorpay KYCs, and each order carries a transfer of the creator's share to that account. Razorpay settles directly to the creator and the platform keeps only the commission, so Eme Coffea et Thea never holds funds (PRD D3).
 
 Planned mapping, to be **re-verified against Razorpay's current docs before writing the adapter**:
 

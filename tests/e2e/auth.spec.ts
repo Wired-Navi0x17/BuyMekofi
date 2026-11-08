@@ -32,7 +32,7 @@ test("register asks for a username first, then account details", async ({ page }
   const name = `e2e_${Date.now().toString(36)}`;
   await page.getByLabel("Username").fill(name);
   await page.getByRole("button", { name: "Next", exact: true }).click();
-  await expect(page.getByText(`coffeaetthea.in/${name}`)).toBeVisible();
+  await expect(page.getByText(`emecoffeaetthea.in/${name}`)).toBeVisible();
   await page.getByRole("button", { name: "Change" }).click();
   await expect(page.getByLabel("Username")).toBeVisible();
 });

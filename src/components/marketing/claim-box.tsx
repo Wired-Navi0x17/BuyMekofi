@@ -7,7 +7,7 @@ import { claimUsername, type ClaimState } from "@/modules/profiles/actions";
 
 const initial: ClaimState = {};
 
-/** "coffeaetthea.in/[ yourname ] Claim", the first thing a creator does. */
+/** "emecoffeaetthea.in/[ yourname ] Claim", the first thing a creator does. */
 export function ClaimBox() {
   const [state, action, pending] = useActionState(claimUsername, initial);
   const id = useId();
@@ -18,7 +18,7 @@ export function ClaimBox() {
       <label htmlFor={id} className="sr-only">
         Choose your page address
       </label>
-      <div className="flex min-h-14 items-stretch panel press-shadow focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
+      <div className="panel flex min-h-14 items-stretch press-shadow focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
         <span
           aria-hidden
           className="flex items-center pr-0.5 pl-4 tabular text-ink-soft select-none"

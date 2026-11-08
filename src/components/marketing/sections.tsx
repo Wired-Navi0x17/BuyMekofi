@@ -24,7 +24,7 @@ export function HowItWorks({ content }: { content: Content<"landing.steps"> }) {
           {content.items.map((step, i) => (
             <li
               key={step.title}
-              className={`relative overflow-hidden panel p-5 md:p-7 ${layout[i]}`}
+              className={`panel relative overflow-hidden p-5 md:p-7 ${layout[i]}`}
             >
               {tones[i] && (
                 <div
@@ -149,7 +149,7 @@ export function Pricing({ note }: { note: Content<"landing.pricing_note"> }) {
             You pay when you are paid. Not before.
           </h2>
           {/* The pricing is a café menu: item, dotted leader, price. */}
-          <div className="mt-10 panel p-5 press-shadow md:p-8">
+          <div className="panel mt-10 p-5 press-shadow md:p-8">
             <p className="font-display text-xl">Menu</p>
             <table className="mt-4 w-full border-collapse text-left">
               <caption className="sr-only">{brand.name} pricing</caption>

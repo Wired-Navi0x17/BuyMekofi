@@ -74,7 +74,11 @@ export function BurnIntro({ children }: { children: ReactNode }) {
     if (window.location.hash) {
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
     }
-    window.scrollTo({ top: 0, behavior: "instant" });
+    const toTop = () => window.scrollTo({ top: 0, behavior: "instant" });
+    toTop();
+    // The browser may still apply a #fragment or restored scroll after load.
+    const lateReset = requestAnimationFrame(toTop);
+    window.addEventListener("load", toTop, { once: true });
 
     gsap.registerPlugin(ScrollTrigger);
     const inertTargets = document.querySelectorAll<HTMLElement>("[data-intro-inert]");
@@ -147,6 +151,8 @@ export function BurnIntro({ children }: { children: ReactNode }) {
     };
 
     return () => {
+      cancelAnimationFrame(lateReset);
+      window.removeEventListener("load", toTop);
       window.history.scrollRestoration = "auto";
       ctx.revert();
       gsap.killTweensOf(params);
@@ -183,7 +189,7 @@ export function BurnIntro({ children }: { children: ReactNode }) {
               <Wordmark animated className="w-[min(92vw,64rem)] text-ink md:-ml-4" />
             </div>
             <div className="flex items-center justify-between gap-6">
-              <p className="ink-after max-w-[28ch] text-sm text-ink-soft [--ink-after-delay:2.4s]">
+              <p className="ink-after max-w-[28ch] text-sm text-ink-soft [--ink-after-delay:3s]">
                 Scroll to open the page.
               </p>
               <button

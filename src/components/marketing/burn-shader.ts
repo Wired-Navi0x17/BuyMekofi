@@ -45,14 +45,14 @@ void main() {
   uv.y *= min(1., u_resolution.y / u_resolution.x);
 
   float t = u_progress;
-  // sheet token #F6F1E4 (newsprint)
-  vec3 color = vec3(.965, .945, .894);
+  // sheet token #FFFEFC (2-D café paper)
+  vec3 color = vec3(1., .996, .988);
 
   float main_noise = 1. - fbm(.75 * uv + 10. - vec2(.3, .9 * t));
 
   float paper_darkness = smoothstep(main_noise - .1, main_noise, t);
   // Char towards neutral ink black (subtracting the paper itself avoids a colour cast).
-  color -= vec3(.965, .945, .894) * paper_darkness * .97;
+  color -= vec3(1., .996, .988) * paper_darkness * .9;
 
   // Monochrome: an ash-white smoulder instead of orange flame (founder, no orange).
   vec3 fire_color = fbm(6. * uv - vec2(0., .005 * u_time)) * vec3(2.6);

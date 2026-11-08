@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ede6d6",
+  themeColor: "#f7f7f4",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -33,7 +33,30 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${geist.variable} ${delaGothic.variable} antialiased`}
     >
-      <body className="min-h-[100dvh] bg-paper text-ink">{children}</body>
+      <body className="min-h-[100dvh] bg-paper text-ink">
+        {/* Pencil-wobble filters for hand-drawn outlines (the `panel` utility). */}
+        <svg aria-hidden width="0" height="0" className="absolute">
+          <filter id="sketch">
+            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7" />
+            <feDisplacementMap
+              in="SourceGraphic"
+              scale="3"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+          <filter id="sketch-light">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="1" seed="21" />
+            <feDisplacementMap
+              in="SourceGraphic"
+              scale="2.2"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+        </svg>
+        {children}
+      </body>
     </html>
   );
 }

@@ -201,3 +201,32 @@ describe("account deletion with history", () => {
     expect(del.error?.message).toMatch(/append-only/);
   });
 });
+
+describe("hyphenated usernames", () => {
+  it("allows hyphens but treats - and _ as the same name", async () => {
+    const base = uniqueUsername("hy").replace("_", "-");
+    const u1 = await createTestUser("hy1");
+    const u2 = await createTestUser("hy2");
+    try {
+      const first = await u1.client
+        .from("creator_profiles")
+        .insert({ user_id: u1.id, username: base, display_name: "A" });
+      expect(first.error).toBeNull();
+      const lookalike = await u2.client
+        .from("creator_profiles")
+        .insert({ user_id: u2.id, username: base.replace("-", "_"), display_name: "B" });
+      expect(lookalike.error?.code).toBe("23505");
+      const { data } = await anon().rpc("username_availability", {
+        candidate: base.replace("-", "_"),
+      });
+      expect(data).toBe("taken");
+      const reserved = await anon().rpc("username_availability", { candidate: "forgot_password" });
+      expect(reserved.data).toBe("reserved");
+      const doubled = await anon().rpc("username_availability", { candidate: "a--b" });
+      expect(doubled.data).toBe("invalid");
+    } finally {
+      await deleteTestUser(u1);
+      await deleteTestUser(u2);
+    }
+  });
+});

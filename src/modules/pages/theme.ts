@@ -15,6 +15,15 @@ export type Palette = {
 
 /** Presets. Each one passes AA (4.5:1) for body text; see theme.test.ts. */
 export const PALETTES = {
+  cafe_2d: {
+    background: "#f7f7f4",
+    surface: "#fffefc",
+    text: "#1b1b1a",
+    muted: "#4a4a47",
+    accent: "#1b1b1a",
+    accentText: "#fffefc",
+    border: "#1b1b1a",
+  },
   newsprint: {
     background: "#ede6d6",
     surface: "#f6f1e4",
@@ -65,6 +74,7 @@ export const PALETTES = {
 export type PaletteName = keyof typeof PALETTES;
 export const PALETTE_NAMES = Object.keys(PALETTES) as PaletteName[];
 export const paletteLabel: Record<PaletteName, string> = {
+  cafe_2d: "2D café",
   newsprint: "Newsprint",
   ink_night: "Ink night",
   matcha: "Matcha",

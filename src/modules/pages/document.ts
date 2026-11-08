@@ -105,7 +105,7 @@ export type BlockType = PageBlock["type"];
 
 export function defaultTheme(): PageTheme {
   return {
-    palette: "newsprint",
+    palette: "cafe_2d",
     fonts: { display: "dela_gothic", body: "geist", accent: "cutive_mono" },
     border: { width: 3, style: "solid" },
     radius: 0,
