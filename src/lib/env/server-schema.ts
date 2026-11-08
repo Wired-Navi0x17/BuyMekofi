@@ -7,6 +7,8 @@ export const serverSchema = z
     ELIGIBILITY_PEPPER: z.base64().refine((v) => Buffer.from(v, "base64").length >= 32, {
       message: "must decode to at least 32 bytes",
     }),
+    // Reverse proxies we control in front of the app; sets which X-Forwarded-For entry is the client.
+    TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(1),
     PAYMENTS_MODE: z.enum(["mock", "live"]).default("mock"),
     MOCK_WEBHOOK_SECRET: z.string().min(32).optional(),
     ALLOW_MOCK_IN_PRODUCTION: z.stringbool().default(false),

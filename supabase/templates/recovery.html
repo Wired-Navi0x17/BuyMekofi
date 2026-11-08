@@ -2,7 +2,7 @@
 <p>Open the link below, then press the button on the page to choose a new password.</p>
 <p>
   <a
-    href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=%2Freset-password"
+    href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&email={{ .Email }}&next=%2Freset-password"
     >Reset your password</a
   >
 </p>

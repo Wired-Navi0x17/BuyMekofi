@@ -4,7 +4,8 @@
   this address.
 </p>
 <p>
-  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup&next=%2Fonboarding"
+  <a
+    href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup&email={{ .Email }}&next=%2Fonboarding"
     >Confirm your email</a
   >
 </p>

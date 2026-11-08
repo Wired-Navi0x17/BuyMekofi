@@ -46,7 +46,9 @@ Unauthorised admin routes return **404**, not 403, so the admin area's existence
 
 `rate_limit_hit(key, window, max)` uses a fixed window in Postgres. It is enough for launch, and Redis can replace it later behind the same function. Implemented in migration `20261108150000` and `src/modules/auth/rate-limit.ts`; keys are HMACs, and the limiter fails closed. Limits: login, sign-up and recovery 5 per 15 min (IP + email, plus an email-only bucket and an IP-wide ceiling of 40); resend 3 per hour; email-link confirm 10 per 15 min.
 
-Email links must not spend their token on GET, because mail scanners fetch links. `/auth/confirm` spends it on a button press. This needs the custom email templates, which need custom SMTP (see progress.md).
+Email links must not spend their token on GET, because mail scanners fetch links. `/auth/confirm` spends it on a button press. The confirm page shows which address the link is for before the button, because a token-hash link is not bound to the browser that asked for it (someone could forward their own link). Consider binding it to the signing-up browser with a cookie when SMTP is enabled. The client IP is taken from X-Forwarded-For `TRUSTED_PROXY_HOPS` entries from the right, so client-supplied entries are ignored; the per-email ceiling for login is 20 per 15 min so a short burst cannot lock an owner out.
+
+This needs the custom email templates, which need custom SMTP (see progress.md).
 
 | Surface                     | Key                  | Limit       |
 | --------------------------- | -------------------- | ----------- |

@@ -2,14 +2,19 @@ import "server-only";
 import { headers } from "next/headers";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { serverEnv } from "@/lib/env/server";
-import { AUTH_LIMITS, rateKey, type AuthLimit } from "./rate-limit-policy";
+import {
+  AUTH_LIMITS,
+  EMAIL_CEILING,
+  clientIpFrom,
+  rateKey,
+  type AuthLimit,
+} from "./rate-limit-policy";
 
 export type RateResult = { allowed: true } | { allowed: false; retryAfterSeconds: number };
 
-/** First hop of x-forwarded-for, set by the platform proxy; "unknown" when absent. */
 async function clientIp(): Promise<string> {
   const h = await headers();
-  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
+  return clientIpFrom(h.get("x-forwarded-for"), serverEnv().TRUSTED_PROXY_HOPS);
 }
 
 async function hit(key: string, max: number, windowSeconds: number): Promise<RateResult> {
@@ -39,7 +44,10 @@ export async function limitAuth(limit: AuthLimit, email?: string): Promise<RateR
     hit(rateKey(limit, email ? [ip, email] : [ip], pepper), max, windowSeconds),
   ];
   // An email-keyed bucket on its own, so rotating IPs does not unlock one inbox.
-  if (email) checks.push(hit(rateKey(`${limit}:email`, [email], pepper), max * 2, windowSeconds));
+  if (email && limit in EMAIL_CEILING) {
+    const c = EMAIL_CEILING[limit as keyof typeof EMAIL_CEILING];
+    checks.push(hit(rateKey(`${limit}:email`, [email], pepper), c.max, c.windowSeconds));
+  }
   const results = await Promise.all(checks);
   const refused = results.filter((r) => !r.allowed);
   if (refused.length === 0) return { allowed: true };

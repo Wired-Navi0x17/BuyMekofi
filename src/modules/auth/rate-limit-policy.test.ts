@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { AUTH_LIMITS, rateKey, waitMessage } from "./rate-limit-policy";
+import {
+  AUTH_LIMITS,
+  EMAIL_CEILING,
+  clientIpFrom,
+  rateKey,
+  waitMessage,
+} from "./rate-limit-policy";
 
 const pepper = Buffer.alloc(32, 7).toString("base64");
 
@@ -40,5 +46,25 @@ describe("waitMessage", () => {
     expect(waitMessage(1)).toContain("1 minute");
     expect(waitMessage(61)).toContain("2 minutes");
     expect(waitMessage(900)).toContain("15 minutes");
+  });
+});
+
+describe("clientIpFrom", () => {
+  it("ignores client-supplied entries to the left of the trusted proxy", () => {
+    expect(clientIpFrom("6.6.6.6, 9.9.9.9", 1)).toBe("9.9.9.9");
+    expect(clientIpFrom("6.6.6.6, 9.9.9.9, 10.0.0.1", 2)).toBe("9.9.9.9");
+  });
+  it("does not trust the header with zero hops, or when it is absent or too short", () => {
+    expect(clientIpFrom("9.9.9.9", 0)).toBe("unknown");
+    expect(clientIpFrom(null, 1)).toBe("unknown");
+    expect(clientIpFrom("9.9.9.9", 3)).toBe("unknown");
+  });
+});
+
+describe("email ceilings", () => {
+  it("are never tighter than the per-client limit", () => {
+    for (const k of Object.keys(EMAIL_CEILING) as (keyof typeof EMAIL_CEILING)[]) {
+      expect(EMAIL_CEILING[k].max).toBeGreaterThanOrEqual(AUTH_LIMITS[k].max);
+    }
   });
 });
