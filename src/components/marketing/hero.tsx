@@ -1,12 +1,34 @@
 import { Info } from "@phosphor-icons/react/ssr";
-import { brand } from "@/config/brand";
+import type { Content } from "@/modules/cms/content";
+import Link from "next/link";
 import { SiteHeader } from "./site-header";
 import { PageSpecimen } from "./page-specimen";
 import { ClaimBox } from "./claim-box";
 
-export function Hero() {
+type HeroProps = {
+  content: Content<"landing.hero">;
+  announcement: Content<"site.announcement">;
+};
+
+export function Hero({ content, announcement }: HeroProps) {
   return (
     <div className="flex min-h-[100dvh] flex-col bg-paper">
+      {announcement.enabled && (
+        <p className="border-b-2 border-ink bg-ink px-4 py-2 text-center text-sm text-sheet">
+          {announcement.text}
+          {announcement.linkHref && (
+            <>
+              {" "}
+              <Link
+                href={announcement.linkHref}
+                className="font-semibold underline underline-offset-4"
+              >
+                {announcement.linkLabel}
+              </Link>
+            </>
+          )}
+        </p>
+      )}
       <SiteHeader />
       <section
         aria-labelledby="hero-title"
@@ -17,25 +39,20 @@ export function Hero() {
             id="hero-title"
             className="font-display text-[clamp(2rem,3.7vw,3.05rem)] leading-[1.08] tracking-[-0.01em] text-balance"
           >
-            A page as personal as your own website.
+            {content.title}
             <span className="mt-3 block sfx [-webkit-text-stroke-width:1.5px] [text-shadow:3px_3px_0_var(--color-ink)]">
-              And a way to get paid for it.
+              {content.highlight}
             </span>
           </h1>
-          <p className="mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-ink-soft">
-            Shape it however you like: layouts, typefaces, colours, backgrounds, collages, tabs and
-            hover details. Your portfolio lives there, and so does a support panel. The page costs
-            nothing; we charge commission only on contributions processed through {brand.name}.
+          <p className="mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed whitespace-pre-line text-ink-soft">
+            {content.body}
           </p>
           <div className="mt-8">
             <ClaimBox />
           </div>
           <p className="mt-6 flex max-w-[52ch] items-start gap-2 text-sm text-ink-soft">
             <Info aria-hidden className="mt-0.5 shrink-0" size={16} weight="regular" />
-            <span>
-              {brand.name} is in development. You can create an account now; pages and payments open
-              as they are finished, and this page will say so.
-            </span>
+            <span>{content.status}</span>
           </p>
         </div>
         <div className="relative">

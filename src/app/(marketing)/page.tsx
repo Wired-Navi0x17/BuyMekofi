@@ -7,18 +7,27 @@ import {
   Pricing,
   SiteFooter,
 } from "@/components/marketing/sections";
+import { getSiteContent } from "@/modules/cms/read";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  // Published CMS content (cached, tag-revalidated on publish); defaults otherwise.
+  const [hero, announcement, steps, faq, pricingNote] = await Promise.all([
+    getSiteContent("landing.hero"),
+    getSiteContent("site.announcement"),
+    getSiteContent("landing.steps"),
+    getSiteContent("landing.faq"),
+    getSiteContent("landing.pricing_note"),
+  ]);
   return (
     <>
       <BurnIntro>
-        <Hero />
+        <Hero content={hero} announcement={announcement} />
       </BurnIntro>
       <main id="content" data-intro-inert className="relative bg-paper">
-        <HowItWorks />
+        <HowItWorks content={steps} />
         <PaymentRoutes />
-        <Pricing />
-        <Faq />
+        <Pricing note={pricingNote} />
+        <Faq content={faq} />
       </main>
       <SiteFooter />
     </>

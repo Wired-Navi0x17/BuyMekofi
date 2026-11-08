@@ -125,3 +125,79 @@ describe("roles and audit", () => {
     expect(data ?? []).toEqual([]);
   });
 });
+
+describe("site CMS tables", () => {
+  it("published content is public; drafts and history are not", async () => {
+    await admin()
+      .from("site_content_drafts")
+      .upsert({ key: "landing.pricing_note", draft: { body: "secret draft" } });
+    const draftAnon = await anon().from("site_content_drafts").select("draft");
+    expect(draftAnon.data ?? []).toEqual([]);
+    const draftCreator = await a.client.from("site_content_drafts").select("draft");
+    expect(draftCreator.data ?? []).toEqual([]);
+    const history = await a.client.from("site_content_versions").select("id");
+    expect(history.data ?? []).toEqual([]);
+    const live = await anon().from("site_content").select("key");
+    expect(live.error).toBeNull();
+    await admin().from("site_content_drafts").delete().eq("key", "landing.pricing_note");
+  });
+
+  it("clients cannot write site content", async () => {
+    const pub = await a.client
+      .from("site_content")
+      .upsert({ key: "landing.hero", value: { title: "pwned" } });
+    expect(pub.error?.code).toBe("42501");
+    const draft = await a.client
+      .from("site_content_drafts")
+      .upsert({ key: "landing.hero", draft: { title: "pwned" } });
+    expect(draft.error?.code).toBe("42501");
+  });
+
+  it("creators cannot set their own suspension fields", async () => {
+    const { error } = await a.client
+      .from("creator_profiles")
+      .update({ suspended_reason: null, status: "active" })
+      .eq("user_id", a.id);
+    expect(error?.code).toBe("42501");
+  });
+});
+
+describe("account deletion with history", () => {
+  it("a user with audit entries and page versions can be deleted; history survives anonymised", async () => {
+    const u = await createTestUser("del");
+    await admin()
+      .from("creator_profiles")
+      .insert({ user_id: u.id, username: uniqueUsername("del"), display_name: "Del" });
+    await admin()
+      .from("page_versions")
+      .insert({ creator_id: u.id, schema_version: 2, document: {}, published_by: u.id });
+    const { data: entry } = await admin()
+      .from("audit_logs")
+      .insert({
+        actor_id: u.id,
+        actor_kind: "user",
+        action: "test.delete_me",
+        entity_type: "test",
+        entity_id: u.id,
+      })
+      .select("id")
+      .single();
+    await deleteTestUser(u); // throws if deletion fails
+    const { data: after } = await admin()
+      .from("audit_logs")
+      .select("actor_id")
+      .eq("id", entry!.id)
+      .single();
+    expect(after?.actor_id).toBeNull();
+    const { data: versions } = await admin()
+      .from("page_versions")
+      .select("id")
+      .eq("creator_id", u.id);
+    expect(versions).toEqual([]);
+  });
+
+  it("direct edits and deletes of history are still refused", async () => {
+    const del = await admin().from("audit_logs").delete().eq("action", "test.delete_me");
+    expect(del.error?.message).toMatch(/append-only/);
+  });
+});

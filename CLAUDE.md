@@ -21,6 +21,8 @@ Coffea et Thea is a creator page and support platform for India, built as a Next
 - e2e on a cold dev server can time out while Turbopack compiles every route under parallel load. Warm the routes first (curl `/`, `/login`, `/register`, `/onboarding`, `/dashboard`, `/some_name`) or use `--workers=6`. A dev server left over from a killed test run can hang; kill it before rerunning.
 - `pnpm test:integration`: RLS tests against the linked dev Supabase project (needs `.env.local`).
 - `npx supabase db push --remote`: apply migrations to the dev project (dry-run first with `--dry-run`).
+- `pnpm admin:grant <email> [--revoke]`: grant or remove the admin role (audited).
+- `pnpm cleanup:test-users [--yes]`: list, or delete, leftover `@example.test` accounts from the test suites.
 - `pnpm format`.
 
 ## Hard rules

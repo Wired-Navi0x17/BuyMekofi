@@ -206,3 +206,11 @@ The `avatars`, `covers` and `portfolio` buckets are public-read with `file_size_
 
 - **`page_drafts`:** `creator_id` PK, `schema_version`, `draft jsonb` (200 KB cap), `updated_at`. RLS lets only the owner select, insert or update; anon has no access.
 - **`page_documents`:** now public content only: `published` (not null), `published_at`, `schema_version`. Clients cannot write it; publishing upserts it with the service role.
+
+## As built (Milestone 5)
+
+- **`site_content`:** `key` PK (`area.name`), `value jsonb` (≤ 100 KB), `published_at`, `published_by`. Readable by everyone; writable only by the service role.
+- **`site_content_drafts`:** `key` PK, `draft jsonb`, `updated_by`, `updated_at`. Only admins can select (via `has_role`); clients can't write.
+- **`site_content_versions`:** append-only publish history; only admins can read it.
+- **`creator_profiles.suspended_reason`:** set only by admin actions, together with `status`.
+- **Append-only guard:** `forbid_update_delete()` lets foreign-key actions (cascade / set null, detected with `pg_trigger_depth() > 1`) through, so deleting a person also anonymises or removes their history. Direct updates and deletes are still refused.

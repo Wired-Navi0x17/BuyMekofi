@@ -188,6 +188,29 @@ Google Fonts are loaded from Google's CDN on creator pages, which sends visitors
 
 Unpublished drafts were readable through the Supabase API once a page was published (row policy, unrestricted columns). Drafts moved to the owner-only `page_drafts` table, and `page_documents` is now public, server-written content only. A regression test was added. Verification: 24 integration and 39 e2e tests pass.
 
-## Next: Milestone 5 (Admin foundation + Site CMS)
+## Milestone 5: admin foundation + site CMS ✅
 
-`/admin` behind `has_role('admin')` (404 for everyone else): creator list and suspension; `site_content` with draft, publish and history for the landing hero, steps, FAQ, pricing notes and announcements; the landing page reads from the CMS; every admin write is audited.
+- **Access:** `/admin` is gated by `requireAdmin()`, which uses `has_role('admin')` from `user_roles`. Non-admins, signed in or not, get a real **404**. The layout uses `instant = false` so the check runs before streaming; `/admin` is no longer in the proxy's login-redirect list, so it doesn't reveal that it exists. Every page and action re-checks the role.
+- **Overview:** live counts (creators, live pages, suspended) and the latest audit entries.
+- **Creators:** search and status filter. Suspend needs a 3–300 character reason; reinstate is one click. A suspended page disappears immediately, because the public cache is refreshed by tag.
+- **Site content (CMS):** the homepage hero, the four "How it works" panels, the FAQ (add, reorder, remove), the pricing note and an announcement bar (off by default, with a safe link: a same-origin path or https).
+  - Each has Save draft and Save and publish, plus history with "Restore to draft".
+  - Content is plain text, validated by a schema per key. The defaults are the shipped copy, so nothing changed until something is published.
+  - The homepage reads published content through `use cache` and `cacheTag('site:<key>')`, so a publish refreshes it at once.
+- **Audit log viewer:** the newest 200 entries, append-only.
+- **Granting admin:** `pnpm admin:grant <email>`, and `--revoke` to remove it. Both are audited.
+- **Migrations:**
+  - `20261108120000`: `site_content` (public), `site_content_drafts` and `site_content_versions` (admins only, append-only), and `creator_profiles.suspended_reason`.
+  - `20261108130000`: the append-only guard now allows foreign-key cascades. This fixed a bug where any user with history couldn't be deleted (account erasure was impossible).
+- **Tests:** `deleteTestUser` now removes uploads and **fails loudly**. That is how the deletion bug surfaced: it had been silently leaking test accounts. `pnpm cleanup:test-users`, plus `--yes`, removes leftover `@example.test` accounts.
+
+Verification: 112 unit, 29 integration and 42 e2e tests pass. The e2e tests cover the 404 for visitors and creators, publishing and unpublishing the announcement as it appears on the homepage, the audit entry, and suspend → page 404 → reinstate.
+
+**Founder actions:**
+
+1. Run `pnpm admin:grant <your email>` after registering your account.
+2. Run `pnpm cleanup:test-users --yes` to remove the 19 leftover test accounts. Deleting them was blocked from my session's permissions.
+
+## Next: Milestone 6 (vouchers)
+
+Campaigns (admin-controlled durations and availability), introductory voucher claim in the dashboard, calendar-month expiry in `Asia/Kolkata` (test-first), eligibility markers so re-registering doesn't reset the offer, and an audit trail.

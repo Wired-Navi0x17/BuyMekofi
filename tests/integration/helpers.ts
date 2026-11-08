@@ -33,8 +33,20 @@ export async function createTestUser(label: string): Promise<TestUser> {
   return { id: data.user.id, email, client };
 }
 
+/**
+ * Removes a test user. Their uploads are deleted first: Supabase refuses to
+ * delete a user who still owns storage objects. Fails loudly, so leaked test
+ * accounts are noticed instead of piling up in the dev project.
+ */
 export async function deleteTestUser(user: TestUser | undefined) {
-  if (user) await admin().auth.admin.deleteUser(user.id);
+  if (!user) return;
+  const db = admin();
+  for (const bucket of ["avatars", "covers", "page-media"]) {
+    const { data } = await db.storage.from(bucket).list(user.id);
+    if (data?.length) await db.storage.from(bucket).remove(data.map((f) => `${user.id}/${f.name}`));
+  }
+  const { error } = await db.auth.admin.deleteUser(user.id);
+  if (error) throw new Error(`Could not delete test user ${user.email}: ${error.message}`);
 }
 
 export const uniqueUsername = (prefix: string) =>

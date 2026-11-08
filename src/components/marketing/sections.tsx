@@ -1,34 +1,12 @@
-import { brand, profileUrlFor } from "@/config/brand";
+import { brand } from "@/config/brand";
+import type { Content } from "@/modules/cms/content";
 import { launchTerms } from "@/config/launch-terms";
 import { formatBps, formatInr, paise } from "@/lib/money";
 import { calculateCommission } from "@/modules/commission/calculate";
 
 const container = "mx-auto max-w-6xl px-4 md:px-8";
 
-const steps = [
-  {
-    sfx: "Claim",
-    title: "Claim your username",
-    body: `Your page lives at ${profileUrlFor("yourname")}. Short, lowercase, and yours as long as the account is active.`,
-  },
-  {
-    sfx: "Design",
-    title: "Design it like your own site",
-    body: "Choose a layout, then change everything about it: typefaces, colours, backgrounds, image shapes, sections and the way things move on hover. Add your work and the projects you want seen first. The page is useful before anyone pays you anything.",
-  },
-  {
-    sfx: "Share",
-    title: "Share one link",
-    body: "Put it in your Instagram bio, your YouTube description, your newsletter footer. Visitors see your work and, at the bottom, a way to support it.",
-  },
-  {
-    sfx: "Support",
-    title: "Get supported",
-    body: "Supporters pay without creating an account. They choose whether their name appears on your page.",
-  },
-];
-
-export function HowItWorks() {
+export function HowItWorks({ content }: { content: Content<"landing.steps"> }) {
   // A manga page, not a card row: panels of different sizes and tones,
   // read in order, with the last one framed by focus lines.
   const layout = ["md:col-span-6", "md:col-span-3", "md:col-span-3", "md:col-span-6"];
@@ -40,10 +18,10 @@ export function HowItWorks() {
           id="how-title"
           className="max-w-[22ch] font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.06] tracking-[-0.01em] text-balance"
         >
-          From sign-up to your first supporter, in four panels.
+          {content.title}
         </h2>
         <ol className="mt-10 grid gap-3 md:grid-cols-6">
-          {steps.map((step, i) => (
+          {content.items.map((step, i) => (
             <li
               key={step.title}
               className={`relative overflow-hidden panel p-5 md:p-7 ${layout[i]}`}
@@ -142,7 +120,7 @@ export function PaymentRoutes() {
   );
 }
 
-export function Pricing() {
+export function Pricing({ note }: { note: Content<"landing.pricing_note"> }) {
   const months = launchTerms.welcomeVoucherMonths.join(" or ");
   const example = calculateCommission(paise(50_000), launchTerms.gatewayCommissionBps);
   const rows = [
@@ -220,45 +198,14 @@ export function Pricing() {
               <dd className="tabular">{formatInr(example.creatorSharePaise)}</dd>
             </div>
           </dl>
-          <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-            Payment-provider processing charges and GST on our commission are not settled yet. We
-            will publish them here before contributions open, and your dashboard will itemise them
-            on every payment.
-          </p>
+          <p className="mt-4 text-sm leading-relaxed text-ink-soft">{note.body}</p>
         </aside>
       </div>
     </section>
   );
 }
 
-const faqs = [
-  {
-    q: `Is ${brand.name} open?`,
-    a: "Not yet. We are building it now. Accounts open first; contributions through the page open once a licensed payment provider approves our marketplace account.",
-  },
-  {
-    q: "Do I pay anything if nobody supports me?",
-    a: "No. There is no subscription. Commission is a share of a successful contribution, so with no contributions there is nothing to pay.",
-  },
-  {
-    q: "What is the welcome voucher?",
-    a: "A one-time offer for new creators: one or two calendar months at 0% commission, starting when you claim it in your dashboard. It counts calendar months, so a voucher claimed on 31 January runs to the last day of February. One per person.",
-  },
-  {
-    q: "Can supporters stay anonymous?",
-    a: "On your page, yes: a supporter can choose not to have their name shown. That is public anonymity only. Banks and the payment provider always know who paid, and with direct UPI you will see the payer's name in your own UPI app.",
-  },
-  {
-    q: `Does ${brand.name} hold my money?`,
-    a: "No. Direct UPI goes straight to you. Contributions through the page are settled to your bank by the payment provider; we receive only our commission. There is no wallet.",
-  },
-  {
-    q: "Which payment methods will supporters have?",
-    a: "Direct UPI from any UPI app. Through the page: UPI, debit and credit cards, and net banking, subject to what our payment provider supports for this kind of account.",
-  },
-];
-
-export function Faq() {
+export function Faq({ content }: { content: Content<"landing.faq"> }) {
   return (
     <section id="faq" aria-labelledby="faq-title" className="section-gap">
       <div className={`${container} grid gap-10 md:grid-cols-[1fr_1.5fr] md:gap-16`}>
@@ -266,11 +213,11 @@ export function Faq() {
           id="faq-title"
           className="font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.06] tracking-[-0.01em] text-balance md:sticky md:top-10 md:self-start"
         >
-          Questions, answered plainly.
+          {content.title}
         </h2>
         <div className="grid gap-3">
-          {faqs.map((f) => (
-            <details key={f.q} className="group panel">
+          {content.items.map((f, i) => (
+            <details key={`${i}-${f.q}`} className="group panel">
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-6 px-5 py-3 text-lg font-medium [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <span

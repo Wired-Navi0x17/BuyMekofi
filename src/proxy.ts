@@ -6,7 +6,9 @@ import { createServerClient } from "@supabase/ssr";
  * optimistic redirects. This is NOT the authorisation boundary: every
  * protected page and action re-checks the user on the server.
  */
-const PROTECTED_PREFIXES = ["/dashboard", "/onboarding", "/admin"];
+// /admin is deliberately absent: it answers 404 to non-admins instead of
+// redirecting to login, so it does not reveal that it exists.
+const PROTECTED_PREFIXES = ["/dashboard", "/onboarding"];
 const GUEST_ONLY = ["/login", "/register", "/forgot-password"];
 
 export async function proxy(request: NextRequest) {

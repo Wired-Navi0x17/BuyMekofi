@@ -72,6 +72,14 @@ RLS filters rows, not columns. The public policy on a published `page_documents`
 
 **Rule from now on:** never put private columns in a table that has a public row policy. Split them into an owner-only table instead.
 
+### Admin area (Milestone 5)
+
+`requireAdmin()` runs in the layout and again in every page and Server Action. It answers 404 to non-admins and never redirects to login. Admin writes use the service role only after that check, and every one is written to `audit_logs`. CMS text is plain and rendered escaped. Announcement links must be same-origin paths or https.
+
+### Account erasure
+
+Users with history can be deleted: foreign-key actions on append-only tables are allowed (migration `20261108130000`) and are covered by an integration test.
+
 ## 8. Payments
 
 See PAYMENT_MODEL.md §6 and §7: signature verification on the raw body, constant-time compare, event deduplication, row-locked state transitions, amount matching, and server-resolved commission. The webhook processor is only reachable through the service role.

@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "e2e": "playwright test",
-    "test:integration": "vitest run --config vitest.integration.config.mts"
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "admin:grant": "node scripts/grant-admin.mjs",
+    "cleanup:test-users": "node scripts/cleanup-test-users.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "2.1.10",
