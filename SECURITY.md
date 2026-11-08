@@ -44,7 +44,9 @@ Unauthorised admin routes return **404**, not 403, so the admin area's existence
 
 ## 6. Rate limiting and abuse
 
-`rate_limit_hit(key, window, max)` uses a fixed window in Postgres. It is enough for launch, and Redis can replace it later behind the same function.
+`rate_limit_hit(key, window, max)` uses a fixed window in Postgres. It is enough for launch, and Redis can replace it later behind the same function. Implemented in migration `20261108150000` and `src/modules/auth/rate-limit.ts`; keys are HMACs, and the limiter fails closed. Limits: login, sign-up and recovery 5 per 15 min (IP + email, plus an email-only bucket and an IP-wide ceiling of 40); resend 3 per hour; email-link confirm 10 per 15 min.
+
+Email links must not spend their token on GET, because mail scanners fetch links. `/auth/confirm` spends it on a button press. This needs the custom email templates, which need custom SMTP (see progress.md).
 
 | Surface                     | Key                  | Limit       |
 | --------------------------- | -------------------- | ----------- |

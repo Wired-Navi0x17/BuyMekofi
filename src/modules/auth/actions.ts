@@ -13,10 +13,14 @@ import {
   type FieldErrors,
 } from "./schemas";
 import { normaliseUsername, validateUsernameFormat } from "@/modules/profiles/username";
+import { limitAuth } from "./rate-limit";
+import { waitMessage } from "./rate-limit-policy";
 
 export type FormState = {
   status: "idle" | "error" | "sent";
   message?: string;
+  /** Set when the account exists but its email is not confirmed yet, so the form can offer a resend. */
+  unconfirmed?: boolean;
   errors?: FieldErrors;
   email?: string;
 };
@@ -60,6 +64,15 @@ export async function signUp(_prev: FormState, form: FormData): Promise<FormStat
     return { status: "error", errors: fieldErrors(parsed.error), email: str(form, "email") };
   }
 
+  const limited = await limitAuth("signup", parsed.data.email);
+  if (!limited.allowed) {
+    return {
+      status: "error",
+      message: waitMessage(limited.retryAfterSeconds),
+      email: parsed.data.email,
+    };
+  }
+
   // A name chosen in the landing claim box is carried as a prefill only;
   // onboarding re-validates it and the unique constraint decides.
   const wanted = validateUsernameFormat(normaliseUsername(str(form, "username")));
@@ -100,10 +113,24 @@ export async function signIn(_prev: FormState, form: FormData): Promise<FormStat
     };
   }
 
+  const limited = await limitAuth("login", parsed.data.email);
+  if (!limited.allowed) {
+    return {
+      status: "error",
+      message: waitMessage(limited.retryAfterSeconds),
+      email: parsed.data.email,
+    };
+  }
+
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
-    return { status: "error", message: authErrorMessage(error.code), email: parsed.data.email };
+    return {
+      status: "error",
+      message: authErrorMessage(error.code),
+      unconfirmed: error.code === "email_not_confirmed",
+      email: parsed.data.email,
+    };
   }
   // Creators without a page go straight to setup instead of bouncing via the dashboard.
   const next = safeNextPath(str(form, "next"));
@@ -118,6 +145,70 @@ export async function signIn(_prev: FormState, form: FormData): Promise<FormStat
   redirect(next);
 }
 
+/**
+ * Sends the confirmation email again. The answer is the same whether or not
+ * the address is registered or already confirmed, so it cannot be used to
+ * find out who has an account.
+ */
+export async function resendConfirmation(_prev: FormState, form: FormData): Promise<FormState> {
+  const parsed = emailSchema.safeParse(str(form, "email"));
+  if (!parsed.success) {
+    return { status: "error", errors: { email: "Enter a valid email address." } };
+  }
+  const limited = await limitAuth("resend", parsed.data);
+  if (!limited.allowed) {
+    return { status: "error", message: waitMessage(limited.retryAfterSeconds), email: parsed.data };
+  }
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email: parsed.data,
+    options: { emailRedirectTo: callbackUrl("/onboarding") },
+  });
+  if (
+    error &&
+    (error.code === "over_email_send_rate_limit" || error.code === "over_request_rate_limit")
+  ) {
+    return { status: "error", message: authErrorMessage(error.code), email: parsed.data };
+  }
+  return { status: "sent", email: parsed.data };
+}
+
+const CONFIRM_TYPES = ["signup", "email", "recovery"] as const;
+
+/**
+ * Completes an emailed link. The link opens a page that only shows a button;
+ * the one-time token is spent here, on a POST. Mail scanners and link
+ * previewers fetch URLs but do not press buttons, so they cannot use the
+ * token up or confirm an address on the owner's behalf.
+ */
+export async function confirmEmailLink(_prev: FormState, form: FormData): Promise<FormState> {
+  const tokenHash = str(form, "token_hash");
+  const type = str(form, "type");
+  const next = safeNextPath(str(form, "next"));
+  const expired: FormState = {
+    status: "error",
+    message: "That link has expired or was already used. Request a new one from the login page.",
+  };
+  if (
+    !tokenHash ||
+    tokenHash.length > 200 ||
+    !(CONFIRM_TYPES as readonly string[]).includes(type)
+  ) {
+    return expired;
+  }
+  const limited = await limitAuth("confirm");
+  if (!limited.allowed) return { status: "error", message: waitMessage(limited.retryAfterSeconds) };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.verifyOtp({
+    type: type as (typeof CONFIRM_TYPES)[number],
+    token_hash: tokenHash,
+  });
+  if (error) return expired;
+  redirect(next);
+}
+
 export async function signOut(): Promise<void> {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
@@ -128,6 +219,10 @@ export async function requestPasswordReset(_prev: FormState, form: FormData): Pr
   const parsed = emailSchema.safeParse(str(form, "email"));
   if (!parsed.success) {
     return { status: "error", errors: { email: "Enter a valid email address." } };
+  }
+  const limited = await limitAuth("recovery", parsed.data);
+  if (!limited.allowed) {
+    return { status: "error", message: waitMessage(limited.retryAfterSeconds), email: parsed.data };
   }
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {

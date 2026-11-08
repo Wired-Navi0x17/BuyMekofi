@@ -230,6 +230,15 @@ Verification: 117 unit, 30 integration and 42 e2e tests pass.
 
 See **HANDOFF.md** for the next session.
 
+## Auth hardening: rate limits, resend, scanner-proof links (2026-11-08) ✅ / ⏳
+
+Found during the first real sign-up: the confirmation link was opened by a mail scanner 17 seconds after sign-up, which confirmed the account and left the human click with "link expired".
+
+- **Rate limiting (live):** `rate_limit_buckets` + `rate_limit_hit()` (migration `20261108150000`), service-role only, HMAC-hashed keys, fail-closed. Login, sign-up and recovery: 5 per 15 min per IP + email, plus an email-only bucket and an IP-wide ceiling. Resend: 3 per hour. Confirm: 10 per 15 min. Policy is unit-tested; the SQL is integration-tested.
+- **Resend (live):** "Send a new confirmation link" on the check-your-email screen and on the login page when the account is unconfirmed or the link failed. Same answer whether or not the address exists. The login page now shows one error, not two.
+- **Unconfirmed accounts cannot log in** (checked against the remote project: `email_not_confirmed`).
+- **Scanner-proof links (built, waiting on SMTP):** `/auth/confirm` shows a button and spends the token on POST (`confirmEmailLink`). The templates in `supabase/templates/` point at it, but Supabase refuses template changes on the free tier with the built-in sender (HTTP 400), so the template block in `config.toml` is commented out. Until custom SMTP is set up, emails still use the default link, and a scanner can still confirm an address. Enable both together once SMTP is in.
+
 ## Next: Milestone 6 (vouchers)
 
 Campaigns (admin-controlled durations and availability), introductory voucher claim in the dashboard, calendar-month expiry in `Asia/Kolkata` (test-first), eligibility markers so re-registering doesn't reset the offer, and an audit trail.

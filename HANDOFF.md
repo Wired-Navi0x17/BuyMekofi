@@ -30,7 +30,7 @@ Latest round (2026-11-08):
 
 ## Do these first in the new session
 
-1. **Verify the full sign-up in a real Chrome window.** The founder asked for this explicitly. Don't jump straight to `/register`: start on `/`, scroll the landing page like a visitor, use the Claim box (or "Create your page"), then complete register → confirm email → onboarding → Studio → publish.
+1. **Finish the real sign-up check.** The account `l41n-pr0t0` exists and is confirmed (a scanner confirmed it); the founder knows the temporary password. Continue from login: onboarding, Studio, publish; then admin grant. Original brief: verify the full sign-up in a real Chrome window. The founder asked for this explicitly. Don't jump straight to `/register`: start on `/`, scroll the landing page like a visitor, use the Claim box (or "Create your page"), then complete register → confirm email → onboarding → Studio → publish.
    - Username: **`l41n-pr0t0`**. Email: **harshulkala14@gmail.com**.
    - Password: generate a strong one, show it to the founder once, and tell them to change it via **Forgot password**. That also tests the reset flow.
    - The confirmation email must be clicked by the founder (the built-in Supabase sender allows about 2 emails an hour and only reaches team addresses).
@@ -78,6 +78,8 @@ Latest round (2026-11-08):
 
 ## Open items for the founder
 
+- Custom SMTP unlocks the scanner-proof confirm links: then uncomment the template block in `supabase/config.toml` and run `supabase config push`. Until then a mail scanner can confirm an address.
+- The Supabase project is still named BuyMeKofi; rename it.
 - Rotate the Supabase secret key (it was pasted in chat), and change the sudo password (also shared in chat).
 - Set up custom SMTP for auth email (Brevo, Resend or ZeptoMail). EmailJS can't act as an SMTP server.
 - Trademark: "Coffea" is an existing café chain in India (PRD D1). Run an IP India search before committing to the name.

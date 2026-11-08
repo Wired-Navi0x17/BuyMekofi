@@ -6,7 +6,9 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Field, FormMessage } from "@/components/ui/field";
 import {
+  confirmEmailLink,
   requestPasswordReset,
+  resendConfirmation,
   signIn,
   signUp,
   updatePassword,
@@ -19,6 +21,32 @@ import { brand } from "@/config/brand";
 
 const idle: FormState = { status: "idle" };
 const linkClass = "text-ink underline decoration-1 underline-offset-4 hover:text-ink-soft";
+
+/** Asks for a fresh confirmation email. The answer never says whether the address has an account. */
+function ResendConfirmation({ email }: { email: string }) {
+  const [state, action, pending] = useActionState(resendConfirmation, idle);
+  return (
+    <form action={action} className="mt-4">
+      <input type="hidden" name="email" value={email} />
+      <button type="submit" disabled={pending} className={`${linkClass} disabled:opacity-60`}>
+        {pending ? "Sending…" : "Send a new confirmation link"}
+      </button>
+      {state.status === "sent" && (
+        <div className="mt-3" role="status">
+          <FormMessage tone="notice">
+            If that address is waiting for confirmation, a new link is on its way. Earlier links
+            stop working.
+          </FormMessage>
+        </div>
+      )}
+      {state.status === "error" && state.message && (
+        <div className="mt-3">
+          <FormMessage tone="error">{state.message}</FormMessage>
+        </div>
+      )}
+    </form>
+  );
+}
 
 function Heading({ title, lead }: { title: string; lead?: string }) {
   return (
@@ -39,12 +67,15 @@ export function LoginForm() {
       <Heading title="Log in" />
       <form action={action} className="grid gap-5" noValidate>
         <input type="hidden" name="next" value={params.get("next") ?? ""} />
-        {linkError && (
-          <FormMessage tone="error">
-            That link has expired or was already used. Log in, or ask for a new link.
-          </FormMessage>
+        {state.message ? (
+          <FormMessage tone="error">{state.message}</FormMessage>
+        ) : (
+          linkError && (
+            <FormMessage tone="error">
+              That link has expired or was already used. Log in, or send yourself a new one below.
+            </FormMessage>
+          )
         )}
-        {state.message && <FormMessage tone="error">{state.message}</FormMessage>}
         <Field
           label="Email"
           name="email"
@@ -66,6 +97,9 @@ export function LoginForm() {
           {pending ? "Logging in…" : "Log in"}
         </Button>
       </form>
+      {(state.unconfirmed || (linkError && !state.message)) && state.email && (
+        <ResendConfirmation email={state.email} />
+      )}
       <p className="mt-6 flex flex-wrap justify-between gap-3 text-sm text-ink-soft">
         <Link href="/forgot-password" className={linkClass}>
           Forgot your password?
@@ -105,10 +139,13 @@ export function RegisterForm() {
         <Heading title="Check your email" />
         <FormMessage tone="notice">
           If <span className="font-medium">{state.email}</span> can be registered, we have sent a
-          confirmation link to it. Open it on this device to finish setting up your page.
+          confirmation link to it. Open it, press the button on the page it leads to, and you can
+          finish setting up your page.
         </FormMessage>
+        <p className="mt-6 text-sm text-ink-soft">Nothing after a few minutes? Check spam.</p>
+        <ResendConfirmation email={state.email ?? ""} />
         <p className="mt-6 text-sm text-ink-soft">
-          Nothing after a few minutes? Check spam, or{" "}
+          Wrong address?{" "}
           <Link href="/register" className={linkClass}>
             start again
           </Link>
@@ -250,6 +287,61 @@ export function ForgotPasswordForm() {
           {pending ? "Sending…" : "Send reset link"}
         </Button>
       </form>
+    </>
+  );
+}
+
+/**
+ * Target of the link in auth emails. Opening it only shows a button, so a
+ * mail scanner that fetches the URL cannot spend the one-time token.
+ */
+export function ConfirmLinkForm() {
+  const [state, action, pending] = useActionState(confirmEmailLink, idle);
+  const params = useSearchParams();
+  const tokenHash = params.get("token_hash") ?? "";
+  const type = params.get("type") ?? "";
+  const recovery = type === "recovery";
+
+  if (!tokenHash) {
+    return (
+      <>
+        <Heading title="This link is incomplete" />
+        <p className="text-ink-soft">
+          Open the link from your email again, or{" "}
+          <Link href="/login" className={linkClass}>
+            go to log in
+          </Link>{" "}
+          to ask for a new one.
+        </p>
+      </>
+    );
+  }
+  return (
+    <>
+      <Heading
+        title={recovery ? "Reset your password" : "Confirm your email"}
+        lead={
+          recovery
+            ? "Press the button to choose a new password."
+            : "Press the button to confirm this address and finish setting up your page."
+        }
+      />
+      <form action={action} className="grid gap-5" noValidate>
+        <input type="hidden" name="token_hash" value={tokenHash} />
+        <input type="hidden" name="type" value={type} />
+        <input type="hidden" name="next" value={params.get("next") ?? ""} />
+        {state.message && <FormMessage tone="error">{state.message}</FormMessage>}
+        <Button type="submit" disabled={pending} className="w-full">
+          {pending ? "Confirming…" : recovery ? "Continue" : "Confirm my email"}
+        </Button>
+      </form>
+      {state.status === "error" && (
+        <p className="mt-6 text-sm">
+          <Link href="/login" className={linkClass}>
+            Back to log in
+          </Link>
+        </p>
+      )}
     </>
   );
 }

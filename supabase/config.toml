@@ -245,6 +245,19 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# DISABLED until custom SMTP is set up: Supabase refuses template changes on the
+# free tier with the built-in sender (config push returns 400). The /auth/confirm
+# page and these templates are ready; enable both together.
+# # Links go to our own /auth/confirm page, which spends the token on a button
+# # press, so mail scanners that fetch the URL cannot use it up.
+# [auth.email.template.confirmation]
+# subject = "Confirm your email for Eme Coffea et Thea"
+# content_path = "./supabase/templates/confirmation.html"
+
+# [auth.email.template.recovery]
+# subject = "Reset your Eme Coffea et Thea password"
+# content_path = "./supabase/templates/recovery.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
