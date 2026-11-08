@@ -38,6 +38,14 @@ test.describe("landing intro", () => {
     await expect(page.locator(".burn-overlay")).toBeVisible();
     await page.reload();
     await expect(page.locator(".burn-overlay")).toBeVisible();
+    // A reload replays it, even scrolled down with #faq in the URL.
+    // Arriving at a section from another page skips the intro…
+    await page.goto("/login");
+    await page.goto("/#faq");
+    await expect(page.locator(".burn-overlay")).toHaveCount(0);
+    await page.reload();
+    await expect(page.locator(".burn-overlay")).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
     await page.goto("/?nointro#faq");
     await expect(page.locator(".burn-overlay")).toHaveCount(0);
     await expect(page.locator(".intro-spacer")).toHaveAttribute("data-intro", "off");

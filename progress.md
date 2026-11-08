@@ -211,6 +211,14 @@ Verification: 112 unit, 29 integration and 42 e2e tests pass. The e2e tests cove
 1. Run `pnpm admin:grant <your email>` after registering your account.
 2. Run `pnpm cleanup:test-users --yes` to remove the 19 leftover test accounts. Deleting them was blocked from my session's permissions.
 
+## Intro replay fix (2026-11-08) ✅
+
+The intro didn't replay on refresh after a section link had been clicked (the `#faq` left in the URL made it look like an arrival from elsewhere), or after scrolling (the browser restored a scroll position past the burn). Now:
+
+- a reload always replays it from the top;
+- arriving from another page at a section link still skips it;
+- the skip check is repeated inside the effect, which fixes a hydration race that would strip the hash first.
+
 ## Next: Milestone 6 (vouchers)
 
 Campaigns (admin-controlled durations and availability), introductory voucher claim in the dashboard, calendar-month expiry in `Asia/Kolkata` (test-first), eligibility markers so re-registering doesn't reset the offer, and an audit trail.

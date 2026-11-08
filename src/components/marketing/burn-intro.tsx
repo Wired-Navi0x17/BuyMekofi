@@ -18,11 +18,19 @@ const noopSubscribe = () => () => {};
  * 2026-11-07) except: reduced motion, arriving at a section anchor
  * (e.g. /#pricing from another page), or `?nointro` (used by tests).
  */
+function isReload(): boolean {
+  const nav = performance.getEntriesByType("navigation")[0] as
+    PerformanceNavigationTiming | undefined;
+  return nav?.type === "reload";
+}
+
 function shouldSkipIntro(): boolean {
   return (
     window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-    window.location.hash.length > 1 ||
-    new URLSearchParams(window.location.search).has("nointro")
+    new URLSearchParams(window.location.search).has("nointro") ||
+    // Arriving at a section from elsewhere skips; refreshing a page whose URL
+    // still carries #faq from an in-page click does not.
+    (window.location.hash.length > 1 && !isReload())
   );
 }
 
@@ -47,7 +55,9 @@ export function BurnIntro({ children }: { children: ReactNode }) {
     const spacer = spacerRef.current;
     const overlay = overlayRef.current;
     const canvas = canvasRef.current;
-    if (skip || !spacer || !overlay || !canvas) return;
+    // Re-check here: during hydration `skip` is still the server value (false),
+    // and acting on it would strip the #hash that tells us to skip.
+    if (skip || shouldSkipIntro() || !spacer || !overlay || !canvas) return;
 
     // 1.25x is visually identical for a noise field and roughly halves GPU
     // work on retina screens, which is what keeps the scrub smooth.
@@ -57,6 +67,14 @@ export function BurnIntro({ children }: { children: ReactNode }) {
       const id = requestAnimationFrame(() => setState("off"));
       return () => cancelAnimationFrame(id);
     }
+
+    // Always start the sheet at the top: on reload the browser would restore
+    // the old scroll position past the runway and the burn would finish at once.
+    window.history.scrollRestoration = "manual";
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+    window.scrollTo({ top: 0, behavior: "instant" });
 
     gsap.registerPlugin(ScrollTrigger);
     const inertTargets = document.querySelectorAll<HTMLElement>("[data-intro-inert]");
@@ -129,6 +147,7 @@ export function BurnIntro({ children }: { children: ReactNode }) {
     };
 
     return () => {
+      window.history.scrollRestoration = "auto";
       ctx.revert();
       gsap.killTweensOf(params);
       cancelAnimationFrame(raf);
