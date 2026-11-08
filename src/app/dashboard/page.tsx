@@ -51,14 +51,19 @@ async function Account() {
         {brand.domain}/{profile.username}
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
-        <ButtonLink href={`/${profile.username}`}>View your page</ButtonLink>
+        <ButtonLink href="/dashboard/studio" variant="stamp">
+          Design your page
+        </ButtonLink>
+        <ButtonLink href={`/${profile.username}`} variant="secondary">
+          View your page
+        </ButtonLink>
         <ButtonLink href="/onboarding" variant="secondary">
-          Edit your page
+          Edit details
         </ButtonLink>
       </div>
       <p className="mt-8 border-t-2 border-ink pt-6 text-ink-soft">
-        Signed in as <span className="text-ink">{user.email}</span>. Earnings, supporters and the
-        page designer arrive here as they are built.
+        Signed in as <span className="text-ink">{user.email}</span>. Earnings and supporters arrive
+        here as they are built.
       </p>
     </section>
   );

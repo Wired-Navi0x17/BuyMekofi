@@ -154,3 +154,23 @@ describe("image paths", () => {
     expect(error?.code).toBe("23514");
   });
 });
+
+describe("page-media storage", () => {
+  it("owner uploads into their own folder; others and anon cannot", async () => {
+    const own = await a.client.storage
+      .from("page-media")
+      .upload(`${a.id}/g.png`, png, { contentType: "image/png" });
+    expect(own.error).toBeNull();
+    const other = await b.client.storage
+      .from("page-media")
+      .upload(`${a.id}/planted.png`, png, { contentType: "image/png" });
+    expect(other.error).not.toBeNull();
+    const anonUpload = await anon()
+      .storage.from("page-media")
+      .upload(`${a.id}/anon.png`, png, { contentType: "image/png" });
+    expect(anonUpload.error).not.toBeNull();
+    await admin()
+      .storage.from("page-media")
+      .remove([`${a.id}/g.png`]);
+  });
+});

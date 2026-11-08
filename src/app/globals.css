@@ -184,3 +184,15 @@
   text-shadow: 3px 3px 0 var(--color-ink);
   letter-spacing: 0.02em;
 }
+
+/* Creator page "pulse" quote effect (PAGE_STUDIO.md): a slow ink blur. */
+@media (prefers-reduced-motion: no-preference) {
+  .pg-pulse {
+    animation: pg-pulse 3s ease-in-out infinite;
+  }
+}
+@keyframes pg-pulse {
+  50% {
+    filter: blur(1.5px);
+  }
+}

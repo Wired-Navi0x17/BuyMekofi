@@ -3,12 +3,15 @@ import { cacheLife, cacheTag } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { publicEnv } from "@/lib/env/public";
 import { parseDocument, type PageDocument } from "@/modules/pages/document";
+import { mediaUrl } from "@/modules/pages/media";
+export { isOwnImagePath } from "@/modules/pages/media";
 import type { Platform } from "./onboarding-schema";
 import { validateUsernameFormat } from "./username";
 
 export const creatorTag = (username: string) => `creator:${username.toLowerCase()}`;
 
 export type PublicPage = {
+  ownerId: string;
   username: string;
   displayName: string;
   bio: string | null;
@@ -17,19 +20,6 @@ export type PublicPage = {
   links: { platform: Platform; url: string; label: string | null }[];
   document: PageDocument;
 };
-
-/** The only shape the server ever writes: "<owner uuid>/<uuid>.<ext>". */
-export function isOwnImagePath(ownerId: string, path: string | null): path is string {
-  if (!path) return false;
-  const uuid = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-  return new RegExp(`^${ownerId}/${uuid}\\.(jpg|png|webp)$`).test(path);
-}
-
-function storageUrl(bucket: "avatars" | "covers", ownerId: string, path: string | null) {
-  // Re-checked at render (defence in depth beside the DB constraint).
-  if (!isOwnImagePath(ownerId, path)) return null;
-  return `${publicEnv().NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
-}
 
 /**
  * Public, cacheable read of a published page. Uses an anonymous client (no
@@ -65,11 +55,12 @@ export async function getPublicPage(rawUsername: string): Promise<PublicPage | n
   if (!doc?.published) return null;
 
   return {
+    ownerId: profile.user_id,
     username: profile.username,
     displayName: profile.display_name,
     bio: profile.bio,
-    avatarUrl: storageUrl("avatars", profile.user_id, profile.avatar_path),
-    coverUrl: storageUrl("covers", profile.user_id, profile.cover_path),
+    avatarUrl: mediaUrl("avatars", profile.user_id, profile.avatar_path),
+    coverUrl: mediaUrl("covers", profile.user_id, profile.cover_path),
     links: (links ?? []) as PublicPage["links"],
     document: parseDocument(doc.published),
   };

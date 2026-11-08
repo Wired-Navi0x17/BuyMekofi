@@ -83,7 +83,7 @@ The pasted reference uses no JavaScript, only HTML structure and CSS effects. Ev
 
 ## 5. Delivery plan
 
-- **v1 (Milestone 4):** theme layer; flow layout; Identity, Text, Image, Links, Portfolio, Gallery, Quote, Divider and Support blocks; publish and versions.
+- **v1 (Milestone 4): shipped 2026-11-08.** theme layer; flow layout; Identity, Text, Image, Links, Portfolio, Gallery, Quote, Divider and Support blocks; publish and versions.
 - **v2 (Milestone 10):** canvas layout, Collage, Tabs, Reveal cards, interactions, curated embeds, and sandboxed custom CSS.
 
 ## 6. Default template: "Café" (the founder's reference, 2026-11-07)

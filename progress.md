@@ -149,6 +149,41 @@ Not done yet:
 
 Verification: 97 unit, 23 integration and 38 e2e tests pass.
 
-## Next: Milestone 4 (Page Studio v1)
+## Milestone 4: Page Studio v1 ✅
 
-Theme editor (palette presets, up to 3 fonts, backgrounds, borders, image treatments), cover upload, more blocks (gallery, portfolio, quote), live preview, autosave and publish history.
+`/dashboard/studio`, reached from the dashboard's "Design your page", is a two-pane editor. Settings and blocks are on the left; a live preview, toggleable between desktop and mobile, is on the right. On mobile it's an Edit/Preview tab switch.
+
+- **Look:**
+  - 5 colour presets (Newsprint, Ink night, Matcha, Indigo print, Rose zine) plus custom colours, with a live WCAG contrast readout that warns below 4.5:1. Every preset passes AA, and a test checks it.
+  - Typefaces for headings, body and details (so at most 3), chosen from 16 curated Google Fonts plus a system stack. Only the chosen families are loaded.
+  - Border width and style (solid, double, dashed), corners, shadow (none, hard comic, soft), image shape (square, circle, slanted, arch) and background (plain, halftone, ruled).
+  - Cover upload.
+- **Blocks:** About, Links, Text, Quote (optional slow pulse, off under reduced motion), Gallery (up to 12 uploaded images with alt text) and Divider (line, halftone, space), plus the locked Support block. Each can be added, moved up or down, and removed; the page always has exactly one Support block.
+- **Saving:** the draft autosaves after 0.8 s. **Publish** saves the newest draft, validates it, snapshots it to `page_versions`, writes an audit entry and refreshes the public page cache. Drafts are never public.
+- **One renderer:** `CafePage` draws both the public page and the preview, from the same document. Theme values become CSS variables scoped to the page.
+- **Schema v2:** document v1 pages are upgraded on read. The schema is strict: unknown fields are stripped, colours must be hex, fonts must come from the curated list, and image paths must have the shape `<owner>/<uuid>.<ext>`. The server also refuses any document that references another creator's image.
+- **Storage:** new `page-media` bucket (migration `20261108100000`) with the same owner-folder rules. Server Action uploads now allow 5 MB.
+- **Accessibility:** Studio fields use explicit label/id pairs. The e2e test caught that wrapping fields in their labels gave them accessible names like "Quote A line worth…".
+
+Verification:
+
+- `pnpm test`: 107 unit tests.
+- `pnpm test:integration`: 24 tests.
+- `pnpm e2e`: the full Studio journey (restyle → quote → gallery upload → autosave → draft still private → publish → public page shows it in the new colours), plus everything before it.
+- `pnpm build`: passes.
+
+Not done yet (Studio v2, Milestone 10):
+
+- free-position canvas layout;
+- collage, tabs and reveal cards;
+- hover interactions and curated embeds;
+- sandboxed custom CSS;
+- portfolio project pages;
+- version history UI and rollback;
+- drag-and-drop reordering (it uses up/down buttons now).
+
+Google Fonts are loaded from Google's CDN on creator pages, which sends visitors' IPs to Google. Self-hosting is a later privacy improvement.
+
+## Next: Milestone 5 (Admin foundation + Site CMS)
+
+`/admin` behind `has_role('admin')` (404 for everyone else): creator list and suspension; `site_content` with draft, publish and history for the landing hero, steps, FAQ, pricing notes and announcements; the landing page reads from the CMS; every admin write is audited.

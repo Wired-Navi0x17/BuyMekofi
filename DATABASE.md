@@ -196,3 +196,8 @@ The `avatars`, `covers` and `portfolio` buckets are public-read with `file_size_
 - **`page_versions`:** append-only snapshots written at publish time by the service role.
 - **Storage `avatars` (2 MB) and `covers` (5 MB):** JPEG, PNG and WebP only. Writes need `(storage.foldername(name))[1] = auth.uid()`.
 - **`username_availability(text)`:** a `security definer` function that returns `available`, `taken`, `reserved` or `invalid`. It's executable by anon, for the claim box.
+
+## As built (Milestone 4)
+
+- **Storage `page-media`:** 5 MB; JPEG, PNG and WebP only; writes are restricted to the owner's folder. Holds gallery images. Cover images live in `covers`, and their path is stored in the document at `theme.coverPath`.
+- **Document schema v2:** defined in `src/modules/pages/document.ts`. `page_documents.schema_version` is set to 2 on save.
